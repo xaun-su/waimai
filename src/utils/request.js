@@ -8,7 +8,7 @@ export const baseURL = 'http://8.137.157.16:9002'
 // 创建axios实例，可以自定义配置
 const request = axios.create({
  baseURL, // 基础URL
- timeout: 5000 // 请求超时时间，设置为5秒，可以根据实际情况调整
+ timeout: 10000 // 请求超时时间，设置为5秒，可以根据实际情况调整
 })
 
 // 添加请求拦截器
