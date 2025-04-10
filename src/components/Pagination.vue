@@ -1,44 +1,46 @@
 <template>
-
-    <el-pagination
-      v-model:current-page="currentPage4"
-      v-model:page-size="pageSize4"
-      :page-sizes="[100, 200, 300, 400]"
-      :size="size"
-      :disabled="disabled"
-      :background="background"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+  <el-pagination
+    :current-page="currentPage"
+    :page-size="pageSize"
+    :page-sizes="[5, 10, 15, 20]"
+    layout="total, sizes, prev, pager, next, jumper"
+    :total="total"
+    @size-change="handleSizeChange"
+    @current-change="handleCurrentChange"
+  />
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue'
-import type { ComponentSize } from 'element-plus'
+<script setup>
+import { defineProps, defineEmits } from 'vue';
 
+defineProps({
+  currentPage: {
+    type: Number,
+    required: true,
+  },
+  pageSize: {
+    type: Number,
+    required: true,
+  },
+  total: {
+    type: Number,
+    required: true,
+  },
+});
 
-const currentPage4 = ref(4)
+const emit = defineEmits(['page-change'],['size-change']);
 
-const pageSize4 = ref(100)
-const size = ref<ComponentSize>('default')
-const background = ref(false)
-const disabled = ref(false)
+const handleSizeChange = (val) => {
+  console.log(`${val} items per page`);
+  emit('size-change', val);  // 修改：只 emit size
+};
 
-const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
-}
-const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`)
-}
+const handleCurrentChange = (val) => {
+  console.log(`current page: ${val}`);
+  emit('page-change', val);  // 修改：只 emit page
+};
 </script>
 
 <style scoped>
-.demo-pagination-block + .demo-pagination-block {
-  margin-top: 10px;
-}
-.demo-pagination-block .demonstration {
-  margin-bottom: 16px;
-}
+/* 可以添加样式 */
 </style>

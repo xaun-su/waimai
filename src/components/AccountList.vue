@@ -1,6 +1,5 @@
 <template>
-  <div v-if="loading">加载中...</div>
-  <div v-else>
+  <div>
     <!-- 表格展示账户数据 -->
     <el-table :data="accounts" style="width: 100%">
       <el-table-column type="selection" width="55" />
@@ -18,17 +17,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { defineProps } from 'vue';
 
-const loading = ref(false);
-const accounts = ref([
-  { account: '123456', userGroup: '普通管理员', ctime: '2025-04-09' },
-  { account: '123456', userGroup: '普通管理员', ctime: '2025-04-09' },
-  { account: 'autotest', userGroup: '超级管理员', ctime: '2025-04-09' },
-  { account: 'admin', userGroup: '超级管理员', ctime: '2025-04-09' },
-  { account: 'user', userGroup: '超级管理员', ctime: '2025-04-09' },
-  // 添加更多数据
-]);
+defineProps({
+  accounts: {
+    type: Array,
+    required: true,
+  },
+});
+
 const edit = (row) => {
   console.log('编辑', row);
 };
