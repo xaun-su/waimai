@@ -62,8 +62,9 @@ const handleLogin = async () => {
       
       // 登录成功
       const token = response.data.token; // 从响应中获取 token
+      const id = response.data.id; // 从响应中获取 id
       userStore.setToken(token); // 将 token 存储到 userStore 中
-
+      userStore.setId(id);
       ElMessage.success('登录成功'); // 显示成功消息
       router.push('/home'); // 跳转到 home 页面
     } else {

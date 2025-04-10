@@ -23,6 +23,11 @@
 <script setup>
 import { ref } from 'vue'
 import { ElCard, ElForm, ElFormItem, ElInput, ElButton } from 'element-plus'
+import { useUserStore } from '../stores/use'
+import request from '../utils/request'
+
+const user = useUserStore()
+console.log(user.id);
 
 const form = ref({
   oldPassword: '',
@@ -51,13 +56,30 @@ const rules = {
   ]
 }
 
-const handleSubmit = () => {
-  formRef.value?.validate((valid) => {
+const handleSubmit = async() => {
+  formRef.value?.validate(async(valid) => {
     if (valid) {
-      alert('密码修改成功！');
-    } else {
-      console.log('表单验证失败');
-    }
+      // const response = await request.get(`/users/checkoldpwd?oldPwd=${String(form.value.oldPassword)}&id=${user.id}`)
+      // if (response.data.code === 0) {
+      // console.log(form.value.oldPassword,form.value.newPassword,form.value.confirmPassword,user.id);
+      
+        const response = await request.post(`/users/editpwd`,{
+          oldPwd: form.value.oldPassword,
+          newPwd: form.value.newPassword,
+          newPwd1: form.value.confirmPassword,
+          id: user.id,
+        })
+        if (response.data.code === 0) {
+          ElMessage.success('修改成功！');
+          formRef.value?.resetFields();
+          // push('/login')
+        }
+      } else {
+        ElMessage.error('原密码错误！');
+      }
+//     } else {
+//       console.log('表单验证失败');
+//     }
   })
 }
 </script>
