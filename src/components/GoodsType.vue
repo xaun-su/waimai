@@ -72,7 +72,8 @@ const handleEdit = (row) => {
 // 保存
 const handleSave = (row) => {
   editing.value = null;
-  if (originalData.value[row.id].state !== row.state || originalData.value[row.id].name !== row.name) {
+  if (originalData.value[row.id].state !== row.state || originalData.value[row.id].cateName !== row.cateName) {    
+    console.log(row);
     emit('update', row);
   }
   delete originalData.value[row.id];
@@ -80,7 +81,7 @@ const handleSave = (row) => {
 
 // 切换启用状态
 const handleSwitchChange = (row) => {
-  console.log(`分类 ${row.name} 的状态已更改为 ${row.state}`);
+  console.log(`分类 ${row.cateName} 的状态已更改为 ${row.state}`);
 };
 
 // 删除商品类型
@@ -97,6 +98,9 @@ const handleDelete = (row) => {
   )
     .then(() => {
       // 用户点击确定，触发 delete 事件
+      console.log(row.id);
+
+      
       emit('delete', row.id);
       ElMessage.success('删除成功');
     })

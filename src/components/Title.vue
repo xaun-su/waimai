@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="title-content">
-      <slot><span class="title-text"></span></slot>
+      <slot></slot>  <!-- 默认插槽 -->
+      <slot name="title-btn"></slot> <!-- 具名插槽 -->
     </div>
   </div>
 </template>
@@ -11,12 +12,18 @@
 </script>
 
 <style lang="less" scoped>
+.title-content {
+  display: flex;
+  justify-content: space-between; /* 将内容和按钮放在两端 */
+  align-items: center; /* 垂直居中 */
+  padding: 0 20px; /* 左右内边距 */
+}
+
 /deep/.title-text {
-  margin-left: 20px;
   display: block;
-  width: 100%;
+  width: 100%; /* 占据剩余空间 */
   height: 50px;
   line-height: 50px;
   border-bottom: 1px solid rgb(240, 242, 245);
 }
-</style> 
+</style>
