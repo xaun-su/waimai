@@ -1,88 +1,109 @@
 <template>
   <div class="category-list">
     <!-- 分类列表 -->
-    <el-table :data="tableData" style="width: 100%">
+    <el-table :data="goodsType" style="width: 100%">
       <el-table-column label="序号" prop="id" width="100" />
-      <el-table-column label="分类名" prop="name" />
-      <el-table-column label="是否启用">
+      <el-table-column label="分类名">
         <template #default="scope">
-          <el-switch v-model="scope.row.enabled" @change="handleSwitchChange(scope.row)" />
+          <span v-if="editing !== scope.row.id">{{ scope.row.cateName }}</span>
+          <el-input
+            v-else
+            v-model="scope.row.cateName"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="状态">
+        <template #default="scope">
+          <el-switch
+            v-model="scope.row.state"
+            :active-value="1"
+            :inactive-value="0"
+            :disabled="editing !== scope.row.id"
+            @change="handleSwitchChange(scope.row)"
+          />
         </template>
       </el-table-column>
       <el-table-column label="操作" width="200">
         <template #default="scope">
-          <el-button size="small" type="primary">编辑</el-button>
-          <el-button size="small" type="danger">删除</el-button>
+          <el-button
+            v-if="editing !== scope.row.id"
+            size="small"
+            type="primary"
+            @click="handleEdit(scope.row)"
+          >编辑</el-button>
+          <el-button
+            v-else
+            size="small"
+            type="success"
+            @click="handleSave(scope.row)"
+          >完成</el-button>
+          <el-button @click="handleDelete(scope.row)" size="small" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- 分页器
-    <div class="pagination">
-      <span>共 4650 条</span>
-      <el-pagination
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :page-sizes="[5, 10, 20, 50]"
-        :total="4650"
-        layout="total, sizes, prev, pager, next, jumper"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { ElTable, ElTableColumn, ElButton, ElPagination, ElSwitch } from 'element-plus';
+import { defineProps, defineEmits, ref } from 'vue';
+import { ElTable, ElTableColumn, ElButton, ElPagination, ElSwitch, ElMessageBox, ElMessage, ElInput } from 'element-plus';
 
-// 假数据
-const tableData = ref([
-  {
-    id: 4981,
-    name: 'tcs123',
-    enabled: false,
+// 定义 props
+const props = defineProps({
+  goodsType: {
+    type: Array,
+    required: true,
   },
-  {
-    id: 4325,
-    name: 'tcs123',
-    enabled: true,
-  },
-  {
-    id: 4324,
-    name: 'tcs123',
-    enabled: true,
-  },
-  {
-    id: 2958,
-    name: '哈哈哈哈哈哈哈额',
-    enabled: false,
-  },
-  {
-    id: 4299,
-    name: 'hhhhhh',
-    enabled: true,
-  },
-]);
+});
 
-// // 分页
-// const currentPage = ref(1);
-// const pageSize = ref(5);
+// 定义 emits
+const emit = defineEmits(['delete', 'update']);
 
-// const handleSizeChange = (size) => {
-//   pageSize.value = size;
-//   console.log(`每页 ${size} 条`);
-// };
+// 定义 editing 状态
+const editing = ref(null);
+const originalData = ref({});
 
-// const handleCurrentChange = (page) => {
-//   currentPage.value = page;
-//   console.log(`当前页: ${page}`);
-// };
+// 编辑
+const handleEdit = (row) => {
+  editing.value = row.id;
+  originalData.value[row.id] = { ...row };
+};
+
+// 保存
+const handleSave = (row) => {
+  editing.value = null;
+  if (originalData.value[row.id].state !== row.state || originalData.value[row.id].name !== row.name) {
+    emit('update', row);
+  }
+  delete originalData.value[row.id];
+};
 
 // 切换启用状态
 const handleSwitchChange = (row) => {
-  console.log(`分类 ${row.name} 的启用状态已更改为 ${row.enabled}`);
+  console.log(`分类 ${row.name} 的状态已更改为 ${row.state}`);
+};
+
+// 删除商品类型
+const handleDelete = (row) => {
+  ElMessageBox.confirm(
+    `确定要删除分类 ${row.cateName} 吗?`,
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+      center: true,
+    }
+  )
+    .then(() => {
+      // 用户点击确定，触发 delete 事件
+      emit('delete', row.id);
+      ElMessage.success('删除成功');
+    })
+    .catch(() => {
+      // 用户点击取消
+      ElMessage.info('已取消删除');
+    });
 };
 </script>
 
