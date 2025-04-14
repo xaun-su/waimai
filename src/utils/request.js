@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/use.js'
 import { ElMessage } from 'element-plus' // 导入 ElMessage 组件
 // 定义基础URL，方便后续维护和修改
-export const baseURL = 'http://8.137.157.16:9002'
+export const baseURL = 'http://8.137.157.16:9002/api'
 
 // 创建axios实例，可以自定义配置
 const request = axios.create({
