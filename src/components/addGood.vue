@@ -56,7 +56,9 @@
 
       <!-- 提交和重置按钮 -->
       <el-form-item>
-        <el-button type="primary" :loading="loading" @click="onSubmit">添加商品</el-button>
+        <el-button type="primary" :loading="loading" @click="onSubmit">
+          {{ isEdit ? '修改商品' : '添加商品' }}
+        </el-button>
         <el-button @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
@@ -64,16 +66,24 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted, computed } from 'vue';
 import request from '../utils/request.js';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
+import { useRoute, useRouter } from 'vue-router'; // 引入 useRoute 和 useRouter
+
+const route = useRoute(); // 获取 route 实例
+const router = useRouter(); // 获取 router 实例
 
 const goodsType = ref([]);
 const formRef = ref(null);
 const loading = ref(false);
 
+// 判断当前是添加还是修改
+const isEdit = computed(() => route.query.id !== undefined);
+
 const form = reactive({
+  id: '',
   name: '',
   category: '',
   price: 0,
@@ -93,6 +103,7 @@ const formRules = {
   goodsDesc: [{ required: true, message: '请输入商品描述', trigger: 'blur' }],
 };
 
+// 获取商品分类信息
 const getGoodsType = async () => {
   try {
     const response = await request.get('/goods/categories');
@@ -102,28 +113,43 @@ const getGoodsType = async () => {
   }
 };
 
-(async () => {
-  await getGoodsType();
-})();
+// 获取商品信息（修改时）
+const getGoodsInfo = async (id) => {
+  try {
+    const response = await request.get(`/goods/info?id=${id}`);
+    if (response.data && response.data.code === 0) {
+      // 将获取到的商品信息填充到表单中
+      Object.assign(form, response.data.data);
+    } else {
+      ElMessage.error(response.data?.msg || '获取商品信息失败');
+    }
+  } catch (error) {
+    ElMessage.error('获取商品信息失败');
+  }
+};
 
 // 提交表单
 const onSubmit = async () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       loading.value = true;
-      console.log(form);
-      form.imgUrl=form.imgUrl.replace('/upload/imgs/goods_img/','');
-      console.log(form.imgUrl);
-      
       try {
-        const response = await request.post('/goods/add', form);
-        console.log(response);
+        let response;
+        form.imgUrl=form.imgUrl.replace('/upload/imgs/goods_img/', '');
+        if (isEdit.value) {
+          // 修改商品
+          response = await request.post('/goods/edit', form);
+        } else {
+          // 添加商品
+          response = await request.post('/goods/add', form);
+        }
 
         if (response.data.code === 0) {
-          ElMessage.success('商品添加成功');
+          ElMessage.success(isEdit.value ? '商品修改成功' : '商品添加成功');
           resetForm();
+          router.push({ name: 'goodsList' }); // 跳转到商品列表页面
         } else {
-          ElMessage.error(response.msg || '添加失败');
+          ElMessage.error(response.data.msg || '操作失败');
         }
       } catch (error) {
         ElMessage.error('提交失败');
@@ -136,12 +162,14 @@ const onSubmit = async () => {
   });
 };
 
+// 重置表单
 const resetForm = () => {
   form.name = '';
   form.category = '';
   form.price = 0;
   form.goodsDesc = '';
   form.imgUrl = '';
+  formRef.value.resetFields(); // 重置表单验证
 };
 
 // 上传前的校验
@@ -157,7 +185,7 @@ const beforeUpload = (file) => {
 // 上传成功后的处理
 const handleSuccess = (response) => {
   if (response.code === 0) {
-    form.imgUrl = response.imgUrl; // 直接使用服务器返回的相对路径
+    form.imgUrl = response.imgUrl;
     ElMessage.success('上传成功!');
   } else {
     ElMessage.error(response.msg || '上传失败!');
@@ -168,6 +196,14 @@ const handleSuccess = (response) => {
 const handleError = (error) => {
   ElMessage.error('上传失败!');
 };
+
+onMounted(async () => {
+  await getGoodsType();
+  if (isEdit.value) {
+    // 如果是修改商品，则获取商品信息
+    await getGoodsInfo(route.query.id);
+  }
+});
 </script>
 
 <style scoped>

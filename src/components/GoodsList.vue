@@ -22,7 +22,7 @@
       <el-table-column label="商品描述" prop="description" />
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" type="primary">编辑</el-button>
+          <el-button @click="handleEdit(scope.row)" type="primary" size="small">编辑</el-button>
           <el-button @click="handleDelete(scope.row)" size="small" type="danger">删除</el-button>
         </template>
       </el-table-column>
@@ -33,7 +33,6 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits } from 'vue';
 import { ElTable, ElTableColumn, ElButton, ElImage } from 'element-plus';
-import request from '@/utils/request';
 // 定义 props
 const props = defineProps({
   goods: {
@@ -42,10 +41,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['delete-goods']);
+const emit = defineEmits(['delete-goods'],['edit-goods']);
 
 const handleDelete = (row) => {  
   emit('delete-goods', row.id);
+};
+const handleEdit = (row) => {
+  emit('edit-goods', row.id); // 触发 edit-goods 事件，并传递商品 id
 };
 </script>
 

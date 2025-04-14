@@ -1,7 +1,7 @@
 <template>
   <div>
     <Title><span class="title-text">商品列表</span></Title>
-    <GoodsList :goods="goods" @delete-goods="confirmDelete" />
+    <GoodsList :goods="goods" @delete-goods="confirmDelete"  @edit-goods="handleEditGoods"/>
     <Pagination
       :current-page="currentPage"
       :page-size="pageSize"
@@ -16,10 +16,11 @@
 import Title from '@/components/Title.vue';
 import GoodsList from '@/components/GoodsList.vue';
 import Pagination from '@/components/Pagination.vue';
-
 import { ref, onMounted } from 'vue';
 import request from '../utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const goods = ref([]);
 const loading = ref(false);
@@ -104,7 +105,15 @@ const confirmDelete = (goodsId) => {
       });
     });
 };
-
+// 处理编辑事件
+const handleEditGoods = (goodsId) => {
+  router.push({
+    name: 'goodsEdit', // 确保路由名称正确
+    query: {
+      id: goodsId,
+    },
+  });
+};
 // 立即执行的异步函数
 onMounted(async () => {
   await getGoodsList();

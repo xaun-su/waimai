@@ -16,6 +16,7 @@ import OrderStatisticsView from '../views/OrderStatisticsView.vue';
 import PermissionInfoView from '../views/PermissionInfoView.vue';
 import RolePermissionView from '../views/RolePermissionView.vue';
 import Echarts from '../components/Echarts.vue';
+import AddGood from '../components/addGood.vue';
 const routes = [
   {
     path: '/',
@@ -175,6 +176,11 @@ const routes = [
             { label: '权限信息' }
           ]
         }
+      },{
+        path: '/goodsEdit',
+        name: 'goodsEdit',
+        component: AddGood,
+        props: (route) => ({ id: route.query.id }),
       },
       {
         path: '/RolePermission',
