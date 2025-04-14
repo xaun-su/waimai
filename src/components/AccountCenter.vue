@@ -60,9 +60,9 @@ const getAccountCenter = async () => {
 
       adminDetails.value.ctime = adminDetails.value.ctime.slice(0, 10)
       //网站部署前
-      // adminDetails.value.imgUrl=`http://8.137.157.16:9002${adminDetails.value.imgUrl}`
+      adminDetails.value.imgUrl=`http://8.137.157.16:9002${adminDetails.value.imgUrl}`
       //网站部署更改
-      adminDetails.value.imgUrl = response.imgUrl; // 更新头像 URL (保持相对路径)
+      // adminDetails.value.imgUrl = response.imgUrl; // 更新头像 URL (保持相对路径)
 
     } else {
       ElMessage.error(response.data.msg || '获取账户信息失败')

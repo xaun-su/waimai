@@ -17,9 +17,9 @@
       <el-table-column label="商品图片">
         <template #default="scope">
           <!-- 网站部署前 -->
-          <!-- <el-image style="width: 50px; height: 50px" :src="'http://8.137.157.16:9002'+scope.row.imgUrl" :alt="scope.row.name" fit="cover" /> -->\
+          <el-image style="width: 50px; height: 50px" :src="'http://8.137.157.16:9002'+scope.row.imgUrl" :alt="scope.row.name" fit="cover" />
            <!-- 网站部署 -->
-           <el-image style="width: 50px; height: 50px" :src="scope.row.imgUrl" :alt="scope.row.name" fit="cover" />
+           <!-- <el-image style="width: 50px; height: 50px" :src="scope.row.imgUrl" :alt="scope.row.name" fit="cover" /> -->
 
         </template>
       </el-table-column>
