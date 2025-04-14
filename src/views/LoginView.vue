@@ -52,7 +52,7 @@ const handleLogin = async () => {
   isLoading.value = true; // 设置 loading 状态为 true
   try {
     // 调用登录 API
-    const response = await request.post('api/users/checkLogin', {
+    const response = await request.post('/users/checkLogin', {
       account: username.value,
       password: password.value
     });
