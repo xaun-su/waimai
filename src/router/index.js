@@ -15,8 +15,8 @@ import GoodsStatisticsView from '../views/GoodsStatisticsView.vue';
 import OrderStatisticsView from '../views/OrderStatisticsView.vue';
 import PermissionInfoView from '../views/PermissionInfoView.vue';
 import RolePermissionView from '../views/RolePermissionView.vue';
-import Echarts from '../components/Echarts.vue';
 import AddGood from '../components/addGood.vue';
+import LoginHomeView from '../views/LoginHomeView.vue';
 const routes = [
   {
     path: '/',
@@ -38,7 +38,7 @@ const routes = [
     },
     children: [{
       path: '',
-      component: Echarts,
+      component: LoginHomeView,
       meta: {
         breadcrumb: [
           { label: '首页' }

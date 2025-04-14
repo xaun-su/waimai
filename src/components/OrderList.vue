@@ -12,7 +12,7 @@
         <el-form-item label="手机号">
           <el-input v-model="searchForm.phone" placeholder="请输入手机号" />
         </el-form-item>
-        <br>
+        <br />
         <el-form-item label="订单状态">
           <el-select v-model="searchForm.status" placeholder="请选择订单状态" style="width: 180px">
             <el-option label="全部" value="" />
@@ -31,31 +31,47 @@
       </el-form>
     </div>
 
-
     <!-- 订单列表 -->
-    <el-table :data="tableData" style="width: 100%" stripe>
-      <el-table-column label="订单号" prop="orderId" />
-      <el-table-column label="下单时间" prop="orderTime" />
+    <el-table :data="tableData" style="width: 100%" stripe :row-style="rowStyle">
+      <el-table-column label="订单号" prop="orderNo" />
+      <el-table-column label="下单时间" prop="orderTime">
+        <template #default="scope">
+          <span style="word-break: break-all; white-space: normal;">
+            {{ formatDate(scope.row.orderTime) }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="联系电话" prop="phone" />
       <el-table-column label="收货人" prop="consignee" />
-      <el-table-column label="送货地址" prop="address" />
-      <el-table-column label="送达时间" prop="deliveryTime" />
-      <el-table-column label="备注" prop="remark" />
-      <el-table-column label="订单金额" prop="amount" />
-      <el-table-column label="订单状态" prop="status" />
+      <el-table-column label="送货地址" prop="deliverAddress" />
+      <el-table-column label="送达时间" prop="deliveryTime">
+        <template #default="scope">
+          <span style="word-wrap: break-word; white-space: normal;">
+            {{ formatDate(scope.row.deliveryTime) }}
+          </span>
+        </template>
+      </el-table-column> <el-table-column label="备注" prop="remarks" />
+      <el-table-column label="订单金额" prop="orderAmount" />
+      <el-table-column label="订单状态" prop="orderState" />
       <el-table-column label="操作">
         <template #default="scope">
           <el-button type="text">查看</el-button>
-          <el-button  type="text">编辑</el-button>
+          <el-button type="text">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页组件 -->
+    <el-pagination :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
+      layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElDatePicker, ElButton, ElTable, ElTableColumn } from 'element-plus';
+import { ref, reactive, onMounted, computed } from 'vue';
+
+import request from '../utils/request';
 
 // 搜索表单数据
 const searchForm = ref({
@@ -66,76 +82,101 @@ const searchForm = ref({
   dateRange: [],
 });
 
-// 表格数据
-const tableData = ref([
-  {
-    orderId: '16013',
-    orderTime: '2026-06-19T17:35:19.000Z',
-    phone: '18181358998',
-    consignee: '汪小哥',
-    address: '天府新谷',
-    deliveryTime: '2020-04-16T02:44:58.000Z',
-    remark: '不要辣',
-    amount: 29.7,
-    status: '派送中',
-  },
-  {
-    orderId: '16012',
-    orderTime: '2020-06-04T09:35:13.000Z',
-    phone: '18181358998',
-    consignee: '江女士',
-    address: '天府新谷',
-    deliveryTime: '2020-04-16T02:44:58.000Z',
-    remark: '不要辣',
-    amount: 60,
-    status: '已完成',
-  },
-  {
-    orderId: '16011',
-    orderTime: '2020-06-04T09:35:03.000Z',
-    phone: '18181358998',
-    consignee: '李俊聪',
-    address: '天府新谷',
-    deliveryTime: '2020-04-16T02:44:58.000Z',
-    remark: '微辣',
-    amount: 99.88,
-    status: '已受理',
-  },
-  {
-    orderId: '15014',
-    orderTime: '2020-06-04T09:34:43.000Z',
-    phone: '18181358998',
-    consignee: '李大陆',
-    address: '天府新谷',
-    deliveryTime: '2020-04-16T02:44:58.000Z',
-    remark: '不要辣',
-    amount: 99.88,
-    status: '已受理',
-  },
-  {
-    orderId: '15013',
-    orderTime: '2020-06-04T09:34:33.000Z',
-    phone: '18181358998',
-    consignee: '王女士',
-    address: '天府新谷',
-    deliveryTime: '2020-04-16T02:44:58.000Z',
-    remark: '微辣',
-    amount: 19.88,
-    status: '已完成',
-  },
-]);
+// 订单数据
+const tableData = ref([]);
+
+// 分页数据
+const currentPage = ref(1);
+const pageSize = ref(5);
+const total = ref(0);
+// 控制行的颜色
+const rowStyle = (row, rowIndex) => {
+  if (rowIndex % 2 === 0) {
+    return { background: 'rgb(135, 206, 235)' }; // 偶数行
+  } else {
+    return { background: 'rgb(238, 232, 170)' }; // 奇数行
+  }
+};
+// 格式化时间
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  try {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  } catch (error) {
+    console.error('日期格式化失败:', error);
+    return 'Invalid Date'; // 或者其他默认值
+  }
+};
+
+
+// 获取订单列表
+const getTableData = async () => {
+  try {
+    // 构造请求参数
+    const params = {
+      currentPage: currentPage.value,
+      pageSize: pageSize.value,
+      orderNo: searchForm.value.orderId,
+      consignee: searchForm.value.consignee,
+      phone: searchForm.value.phone,
+      orderState: searchForm.value.status,
+      date: searchForm.value.dateRange
+        ? [formatDate(searchForm.value.dateRange[0]), formatDate(searchForm.value.dateRange[1])]
+        : [],
+    };
+
+    const response = await request.get('/order/list', { params });
+
+    if (response.data && response.data.data) {
+      tableData.value = response.data.data;
+      console.log(tableData.value);
+
+      total.value = response.data.total;
+    } else {
+      ElMessage.error('获取订单列表失败');
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('获取订单列表失败');
+  }
+};
 
 // 搜索
 const handleSearch = () => {
-  console.log('搜索条件:', searchForm.value);
+  currentPage.value = 1; // 搜索时重置为第一页
+  getTableData();
 };
+
+// 每页条数改变
+const handleSizeChange = (size) => {
+  pageSize.value = size;
+  getTableData();
+};
+
+// 当前页码改变
+const handleCurrentChange = (page) => {
+  currentPage.value = page;
+  getTableData();
+};
+
+onMounted(async () => {
+  await getTableData();
+});
 </script>
 
 <style scoped>
-.search-form{
+.search-form {
   margin-left: 20px;
   margin-top: 5px;
 }
+
 .el-table {
   margin: 0;
   padding: 0;
