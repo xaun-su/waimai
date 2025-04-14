@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="breadcrumb">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index">
         <router-link v-if="item.path && index !== breadcrumbItems.length - 1" :to="item.path">
@@ -8,13 +8,14 @@
         <span v-else>{{ item.label }}</span>
       </el-breadcrumb-item>
     </el-breadcrumb>
+    <Person/>
   </div>
 </template>
 
 <script setup>
 import { ref, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
-
+import Person from './Person.vue'
 const route = useRoute()
 const breadcrumbItems = ref([{ label: '首页', path: '/home' }])
 
@@ -46,5 +47,10 @@ watch(
 </script>
 
 <style lang="less" scoped>
-
+.breadcrumb{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 </style> 

@@ -128,7 +128,6 @@ import { Plus } from '@element-plus/icons-vue';
 import request from '../utils/request'; // 引入你的 request 库
 
 // 定义接口地址
-const baseUrl = 'http://8.137.157.16:9002'; // 你的 API 基础地址
 const uploadUrl ='/shop/upload';
 const shopInfoUrl ='/shop/info';
 const shopEditUrl ='/shop/edit';
@@ -168,7 +167,7 @@ const getShopInfo = async () => {
         score: response.data.data.score,
         sellCount: response.data.data.sellCount,
         supports: response.data.data.supports,
-        pics: response.data.data.pics.map(pic => baseUrl+'/upload/shop/'+ pic), // 拼接完整的图片URL
+        // pics: response.data.data.pics.map(pic => baseUrl+'/upload/shop/'+ pic), // 拼接完整的图片URL
         date: response.data.data.date,
         minPrice: response.data.data.minPrice,
       };
@@ -233,7 +232,7 @@ const handleEdit = async () => {
       sellCount: shopInfo.value.sellCount,
       supports: shopInfo.value.supports,
       date: shopInfo.value.date,
-      pics: shopInfo.value.pics.map(pic => pic.split('/').pop()), // 只发送图片名
+      // pics: shopInfo.value.pics.map(pic => pic.split('/').pop()), // 只发送图片名
       minPrice: shopInfo.value.minPrice,
     };
 
