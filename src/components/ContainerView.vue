@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import MenuView from '@/components/MenuView.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 </script>

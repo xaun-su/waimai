@@ -2,7 +2,7 @@
   <div ref="chartRef" class="chart-container"></div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick, defineProps } from 'vue'
 import * as echarts from 'echarts'
 
@@ -16,7 +16,7 @@ const props = defineProps({
 
 // 使用 ref 获取 DOM 元素
 const chartRef = ref(null)
-let chart = null
+let chart:echarts.ECharts | null = null
 
 // 初始化图表
 const initChart = () => {

@@ -8,14 +8,15 @@
         <span v-else>{{ item.label }}</span>
       </el-breadcrumb-item>
     </el-breadcrumb>
-    <Person/>
+    <Person />
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import Person from './Person.vue'
+
 const route = useRoute()
 const breadcrumbItems = ref([{ label: '首页', path: '/home' }])
 
@@ -38,8 +39,11 @@ watch(
   () => route.path,
   () => {
     // 如果路由有 meta.breadcrumb，则使用路由的配置
-    if (route.meta?.breadcrumb) {
-      breadcrumbItems.value = [{ label: '首页', path: '/home' }, ...route.meta.breadcrumb]
+    const metaBreadcrumb = route.meta?.breadcrumb
+    if (metaBreadcrumb && Array.isArray(metaBreadcrumb)) {
+      breadcrumbItems.value = [{ label: '首页', path: '/home' }, ...metaBreadcrumb]
+    } else {
+      breadcrumbItems.value = [{ label: '首页', path: '/home' }] // 默认值
     }
   },
   { immediate: true }
@@ -47,10 +51,10 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.breadcrumb{
+.breadcrumb {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-</style> 
+</style>

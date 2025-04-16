@@ -70,7 +70,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted, computed } from 'vue';
-
+import { ElMessage } from 'element-plus';
 import request from '@/utils/request';
 
 // 搜索表单数据
@@ -90,7 +90,7 @@ const currentPage = ref(1);
 const pageSize = ref(5);
 const total = ref(0);
 // 控制行的颜色
-const rowStyle = (row, rowIndex) => {
+const rowStyle = (row:any, rowIndex:number) => {
   if (rowIndex % 2 === 0) {
     return { background: 'rgb(135, 206, 235)' }; // 偶数行
   } else {
@@ -98,7 +98,7 @@ const rowStyle = (row, rowIndex) => {
   }
 };
 // 格式化时间
-const formatDate = (dateString) => {
+const formatDate = (dateString:string) => {
   if (!dateString) return '';
   try {
     const date = new Date(dateString);
@@ -155,13 +155,13 @@ const handleSearch = () => {
 };
 
 // 每页条数改变
-const handleSizeChange = (size) => {
+const handleSizeChange = (size :number) => {
   pageSize.value = size;
   getTableData();
 };
 
 // 当前页码改变
-const handleCurrentChange = (page) => {
+const handleCurrentChange = (page:number) => {
   currentPage.value = page;
   getTableData();
 };

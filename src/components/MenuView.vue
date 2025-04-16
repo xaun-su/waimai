@@ -7,7 +7,7 @@
     background-color="rgb(48, 65, 86)"
     text-color="#fff"
     active-text-color="rgb(64, 158, 255)"
-    unique-opened="true"
+    :unique-opened="true"
   >
     <el-menu-item index="0" disabled>
       <img src="../assets/vue.svg" alt="" />
@@ -72,7 +72,7 @@
   </el-menu>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   Document,
   Menu as IconMenu,
@@ -83,14 +83,14 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const handleOpen = (key, keyPath) => {
+const handleOpen = (key: string | number, keyPath: Array<string | number>) => {
   console.log('open', key, keyPath);
 };
-const handleClose = (key, keyPath) => {
+const handleClose = (key: string | number, keyPath: Array<string | number>) => {
   console.log('close', key, keyPath);
 };
 
-const handleMenuItemClick = (index) => {
+const handleMenuItemClick = (index:string) => {
   console.log('clicked', index);
 
   switch (index) {

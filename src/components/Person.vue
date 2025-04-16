@@ -14,7 +14,7 @@
   </el-dropdown>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowDown } from '@element-plus/icons-vue';
@@ -42,7 +42,7 @@ const getAccountCenter = async () => {
     } else {
       ElMessage.error(response.data.msg || '获取账户信息失败');
     }
-  } catch (error) {
+  } catch (error:any) {
     console.error('获取账户信息失败:', error);
     ElMessage.error(`获取账户信息失败: ${error.message || '请稍后重试'}`);
   }
