@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Title from '@/components/Title.vue';
 import Pagination from '@/components/Pagination.vue';
 import GoodsType from '@/views/goods/GoodsTypeView/GoodsType.vue';
@@ -76,18 +76,18 @@ const getTypeList = async () => {
   }
 };
 
-const handlePageChange = (page) => {
+const handlePageChange = (page :number) => {
   currentPage.value = page;
   getTypeList();
 };
 
-const handleSizeChange = (size) => {
+const handleSizeChange = (size :number) => {
   pageSize.value = size;
   currentPage.value = 1;
   getTypeList();
 };
 
-const handleDeleteCategory = async (id) => {
+const handleDeleteCategory = async (id :number) => {
   try {
     const res = await request.delete(`/goods/delcate?id=${id}`);
     console.log(res.data.msg);
@@ -107,7 +107,7 @@ const openDialog = () => {
 };
 
 // 打开编辑分类对话框
-const openEditDialog = (row) => {
+const openEditDialog = (row :any) => {
   isEdit.value = true;
   form.value = { ...row }; // 使用当前行的数据填充表单
   currentEditId.value = row.id; // 保存当前编辑的分类ID

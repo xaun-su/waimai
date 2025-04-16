@@ -68,15 +68,21 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted, computed } from 'vue';
 import request from '@/utils/request';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
 import { useRoute, useRouter } from 'vue-router'; // 引入 useRoute 和 useRouter
 
 const route = useRoute(); // 获取 route 实例
 const router = useRouter(); // 获取 router 实例
 
-const goodsType = ref([]);
-const formRef = ref(null);
+interface GoodsType {
+  id: number;
+  cateName: string;
+  // 其他属性
+}
+
+const goodsType = ref<GoodsType[]>([]);
+const formRef = ref<FormInstance | null>(null);
 const loading = ref(false);
 
 // 判断当前是添加还是修改
@@ -92,7 +98,7 @@ const form = reactive({
 });
 
 // 表单验证规则
-const formRules = {
+const formRules: FormRules = {
   name: [{ required: true, message: '请输入商品名称', trigger: 'blur' }],
   category: [{ required: true, message: '请选择商品分类', trigger: 'blur' }],
   price: [
@@ -101,6 +107,10 @@ const formRules = {
   ],
   imgUrl: [{ required: true, message: '请上传商品图片', trigger: 'change' }],
   goodsDesc: [{ required: true, message: '请输入商品描述', trigger: 'blur' }],
+};
+
+const headers = {
+  Authorization: 'Bearer ' + localStorage.getItem('token'), // 确保属性名是字符串类型
 };
 
 // 获取商品分类信息
@@ -114,7 +124,7 @@ const getGoodsType = async () => {
 };
 
 // 获取商品信息（修改时）
-const getGoodsInfo = async (id) => {
+const getGoodsInfo = async (id: string | undefined) => {
   try {
     const response = await request.get(`/goods/info?id=${id}`);
     if (response.data && response.data.code === 0) {
@@ -130,7 +140,7 @@ const getGoodsInfo = async (id) => {
 
 // 提交表单
 const onSubmit = async () => {
-  formRef.value.validate(async (valid) => {
+  formRef.value?.validate(async (valid) => {
     if (valid) {
       loading.value = true;
       try {
@@ -169,11 +179,11 @@ const resetForm = () => {
   form.price = 0;
   form.goodsDesc = '';
   form.imgUrl = '';
-  formRef.value.resetFields(); // 重置表单验证
+  formRef.value?.resetFields(); // 重置表单验证
 };
 
 // 上传前的校验
-const beforeUpload = (file) => {
+const beforeUpload = (file: File) => {
   const isImage = file.type.startsWith('image/');
   if (!isImage) {
     ElMessage.error('只能上传图片文件!');
@@ -183,7 +193,7 @@ const beforeUpload = (file) => {
 };
 
 // 上传成功后的处理
-const handleSuccess = (response) => {
+const handleSuccess = (response:any) => {
   if (response.code === 0) {
     form.imgUrl = response.imgUrl;
     ElMessage.success('上传成功!');
@@ -193,7 +203,7 @@ const handleSuccess = (response) => {
 };
 
 // 上传失败后的处理
-const handleError = (error) => {
+const handleError = () => {
   ElMessage.error('上传失败!');
 };
 
@@ -201,7 +211,7 @@ onMounted(async () => {
   await getGoodsType();
   if (isEdit.value) {
     // 如果是修改商品，则获取商品信息
-    await getGoodsInfo(route.query.id);
+    await getGoodsInfo(route.query.id as string | undefined);
   }
 });
 </script>

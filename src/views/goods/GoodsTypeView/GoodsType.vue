@@ -60,17 +60,17 @@ const props = defineProps({
 const emit = defineEmits(['delete', 'update']);
 
 // 定义 editing 状态
-const editing = ref(null);
-const originalData = ref({});
+const editing = ref<number | null>(null);
+  const originalData = ref<Record<number, any>>({});
 
 // 编辑
-const handleEdit = (row) => {
+const handleEdit = (row :any) => {
   editing.value = row.id;
   originalData.value[row.id] = { ...row };
 };
 
 // 保存
-const handleSave = (row) => {
+const handleSave = (row :any) => {
   editing.value = null;
   if (originalData.value[row.id].state !== row.state || originalData.value[row.id].cateName !== row.cateName) {    
     console.log(row);
@@ -80,12 +80,12 @@ const handleSave = (row) => {
 };
 
 // 切换启用状态
-const handleSwitchChange = (row) => {
+const handleSwitchChange = (row :any) => {
   console.log(`分类 ${row.cateName} 的状态已更改为 ${row.state}`);
 };
 
 // 删除商品类型
-const handleDelete = (row) => {
+const handleDelete = (row :any) => {
   ElMessageBox.confirm(
     `确定要删除分类 ${row.cateName} 吗?`,
     '提示',

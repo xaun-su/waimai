@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Title from '@/components/Title.vue';
 import GoodsList from '@/views/goods/GoodsListView/GoodsList.vue';
 import Pagination from '@/components/Pagination.vue';
@@ -43,7 +43,7 @@ const getGoodsList = async () => {
       console.error('获取账户列表失败:', res.data);
       ElMessage.error(`获取账户列表失败: ${res.data?.msg || '未知错误'}`);
     }
-  } catch (error) {
+  } catch (error:any) {
     console.error('获取账户列表发生异常:', error);
     ElMessage.error(`获取账户列表发生异常: ${error.message || '服务器异常，请稍后重试'}`);
   } finally {
@@ -52,12 +52,12 @@ const getGoodsList = async () => {
 };
 
 // 处理分页变化
-const handlePageChange = (page) => {
+const handlePageChange = (page :number) => {
   currentPage.value = page;
   getGoodsList();
 };
 // 处理每页条数变化
-const handleSizeChange = (size) => {
+const handleSizeChange = (size :number) => {
   // 添加 handleSizeChange 函数
   pageSize.value = size;
   currentPage.value = 1; // 重置为第一页
@@ -65,11 +65,11 @@ const handleSizeChange = (size) => {
 };
 
 // 处理账户删除事件
-const handleGoodsDeleted = async (deletedGoodsId) => {
+const handleGoodsDeleted = async (deletedGoodsId :number) => {
   console.log(deletedGoodsId);
   // 过滤掉已删除的账户
   const res= await request.get(`/goods/del?id=${deletedGoodsId}`);
-  goods.value = goods.value.filter((goods) => goods.id !== deletedGoodsId);
+  goods.value = goods.value.filter((goods:any) => goods.id !== deletedGoodsId);
   total.value--; // 更新总条数
 
   // 判断当前页是否还有数据
@@ -82,7 +82,7 @@ const handleGoodsDeleted = async (deletedGoodsId) => {
   await getGoodsList();
 };
 
-const confirmDelete = (goodsId) => {
+const confirmDelete = (goodsId :number) => {
   ElMessageBox.confirm(
     `确定要删除商品 ${goodsId} 吗?`,
     '提示',
@@ -106,7 +106,7 @@ const confirmDelete = (goodsId) => {
     });
 };
 // 处理编辑事件
-const handleEditGoods = (goodsId) => {
+const handleEditGoods = (goodsId :number) => {
   router.push({
     name: 'goodsEdit', // 确保路由名称正确
     query: {

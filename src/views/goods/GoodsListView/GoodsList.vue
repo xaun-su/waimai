@@ -36,6 +36,7 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits } from 'vue';
 import { ElTable, ElTableColumn, ElButton, ElImage } from 'element-plus';
+import { log } from 'console';
 
 // 定义 props
 const props = defineProps({
@@ -47,12 +48,13 @@ const props = defineProps({
 
 // 修复：将事件名称合并为一个数组
 const emit = defineEmits(['delete-goods', 'edit-goods']);
-
-const handleDelete = (row) => {  
+const handleDelete = (row:any) => {  
   emit('delete-goods', row.id);
+  console.log(row);
+  
 };
 
-const handleEdit = (row) => {
+const handleEdit = (row:any) => {
   emit('edit-goods', row.id); // 触发 edit-goods 事件，并传递商品 id
 };
 </script>
