@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // 使用插槽，不需要额外的逻辑
 </script>
 

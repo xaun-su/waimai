@@ -4,7 +4,7 @@
 </template>
 
 <script setup>
-import OrderList from '@/components/OrderList.vue'
+import OrderList from '@/views/orderlist/children/OrderList.vue'
 import Pagination from '@/components/Pagination.vue';
 </script>
 

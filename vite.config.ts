@@ -15,6 +15,8 @@ export default defineConfig({
     }),
     Components({
       resolvers: [ElementPlusResolver()],
+      dirs: ['src/components'], // 指定组件目录
+      dts: true, // 启用类型声明文件生成
     }),
   ],
   resolve: {

@@ -4,8 +4,8 @@
 </template>
 
 <script setup>
-import Title from '../components/Title.vue';
-import addGood from '../components/addGood.vue';
+import Title from '@/components/Title.vue';
+import addGood from '@/components/addGood.vue';
 </script>
 
 <style lang="less" scoped>

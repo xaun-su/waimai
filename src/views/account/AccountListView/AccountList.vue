@@ -28,7 +28,7 @@
 import { defineProps, defineEmits, computed, ref, PropType } from 'vue';
 import request from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import EditAccountDialog from '@/components/EditAccountDialog.vue';
+import EditAccountDialog from '@/views/account/AccountEditView/children/EditAccountDialog.vue';
 import { Account } from '@/types/account';
 
 const props = defineProps({

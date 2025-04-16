@@ -7,7 +7,7 @@
 
 <script setup>
 import Title from '@/components/Title.vue'
-import AccountCenter from '../components/AccountCenter.vue';
+import AccountCenter from './AccountCenterView/AccountCenter.vue';
 </script>
 
 <style lang="less" scoped>

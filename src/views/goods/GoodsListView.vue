@@ -14,7 +14,7 @@
 
 <script setup>
 import Title from '@/components/Title.vue';
-import GoodsList from '@/components/GoodsList.vue';
+import GoodsList from '@/views/goods/GoodsListView/GoodsList.vue';
 import Pagination from '@/components/Pagination.vue';
 import { ref, onMounted } from 'vue';
 import request from '@/utils/request';

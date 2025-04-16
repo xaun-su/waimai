@@ -10,7 +10,7 @@
   />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
 
 defineProps({
@@ -28,14 +28,14 @@ defineProps({
   },
 });
 
-const emit = defineEmits(['page-change'],['size-change']);
+const emit = defineEmits(['page-change','size-change']);
 
-const handleSizeChange = (val) => {
+const handleSizeChange = (val:number) => {
   console.log(`${val} items per page`);
   emit('size-change', val);  // 修改：只 emit size
 };
 
-const handleCurrentChange = (val) => {
+const handleCurrentChange = (val:number) => {
   console.log(`current page: ${val}`);
   emit('page-change', val);  // 修改：只 emit page
 };

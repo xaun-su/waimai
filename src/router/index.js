@@ -1,22 +1,22 @@
 // router/index.js
 import { createRouter, createWebHashHistory } from 'vue-router';
-import LoginView from '../views/LoginView.vue';
+import LoginView from '../views/login/LoginView.vue';
 import HomeView from '../views/HomeView.vue';
-import AccountListView from '../views/AccountListView.vue';
-import AccountAddView from '../views/AccountAddView.vue';
-import AccountCenterView from '../views/AccountCenterView.vue';
-import AccountEditView from '../views/AccountEditView.vue';
-import GoodsListView from '../views/GoodsListView.vue';
-import GoodsAddView from '../views/GoodsAddView.vue';
-import GoodsTypeView from '../views/GoodsTypeView.vue';
-import OrderListView from '../views/OrderListView.vue';
-import ShopInfoView from '../views/ShopInfoView.vue';
-import GoodsStatisticsView from '../views/GoodsStatisticsView.vue';
-import OrderStatisticsView from '../views/OrderStatisticsView.vue';
-import PermissionInfoView from '../views/PermissionInfoView.vue';
-import RolePermissionView from '../views/RolePermissionView.vue';
+import AccountListView from '../views/account/AccountListView.vue';
+import AccountAddView from '../views/account/AccountAddView.vue';
+import AccountCenterView from '../views/account/AccountCenterView.vue';
+import AccountEditView from '../views/account/AccountEditView.vue';
+import GoodsListView from '../views/goods/GoodsListView.vue';
+import GoodsAddView from '../views/goods/GoodsAddView.vue';
+import GoodsTypeView from '../views/goods/GoodsTypeView.vue';
+import OrderListView from '../views/orderlist/OrderListView.vue';
+import ShopInfoView from '../views/shopinfo/ShopInfoView.vue';
+import GoodsStatisticsView from '../views/statistics/GoodsStatisticsView.vue';
+import OrderStatisticsView from '../views/statistics/OrderStatisticsView.vue';
+import PermissionInfoView from '../views/permission/PermissionInfoView.vue';
+import RolePermissionView from '../views/permission/RolePermissionView.vue';
 import AddGood from '../components/addGood.vue';
-import LoginHomeView from '../views/LoginHomeView.vue';
+import LoginHomeView from '../views/home/LoginHomeView.vue';
 const routes = [
   {
     path: '/',

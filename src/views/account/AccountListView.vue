@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import AccountList from '@/components/AccountList.vue';
+import AccountList from '@/views/account/AccountListView/AccountList.vue';
 import Title from '@/components/Title.vue';
 import Pagination from '@/components/Pagination.vue';
 import { ref, Ref } from 'vue';

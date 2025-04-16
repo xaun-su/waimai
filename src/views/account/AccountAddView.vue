@@ -8,7 +8,7 @@
 
 <script setup>
 import Title from '@/components/Title.vue'
-import AddAccount from '../components/AddAccount.vue';
+import AddAccount from './AccountAddView/AddAccount.vue';
 </script>
 
 <style lang="less" scoped>

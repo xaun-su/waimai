@@ -43,7 +43,7 @@
 <script setup>
 import Title from '@/components/Title.vue';
 import Pagination from '@/components/Pagination.vue';
-import GoodsType from '@/components/GoodsType.vue';
+import GoodsType from '@/views/goods/GoodsTypeView/GoodsType.vue';
 import { ref } from 'vue';
 import request from '@/utils/request';
 import { ElMessage } from 'element-plus';

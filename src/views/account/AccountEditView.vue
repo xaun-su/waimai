@@ -7,7 +7,7 @@
 
 <script setup>
 import Title from '@/components/Title.vue'
-import AccountEdit from '../components/AccountEdit.vue';
+import AccountEdit from './AccountEditView/AccountEdit.vue';
 </script>
 
 <style lang="less" scoped>
