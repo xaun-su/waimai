@@ -20,9 +20,9 @@
   </el-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from 'vue';
-
+import { Account } from '@/types/account'; 
 const props = defineProps({
   dialogVisible: {
     type: Boolean,
@@ -37,7 +37,13 @@ const props = defineProps({
 const emit = defineEmits(['close', 'account-updated']);
 
 const dialogVisible = ref(props.dialogVisible);
-const form = ref({
+
+// Pick 类型可以从一个已有的接口中选择指定的属性，创建一个新的类型。
+
+
+type FormAccount = Pick<Account, 'account' | 'userGroup'>;
+
+const form = ref<FormAccount>({
   account: '',
   userGroup: '',
 });
@@ -53,7 +59,7 @@ watch(
   () => props.account,
   (newValue) => {
     if (newValue) {
-      form.value = { ...newValue };
+      form.value = { ...newValue as FormAccount };
     }
   },
   { immediate: true }

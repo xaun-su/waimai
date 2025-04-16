@@ -17,41 +17,40 @@
     <!-- 编辑对话框 -->
     <EditAccountDialog
       :dialogVisible="editDialogVisible"
-      :account="selectedAccount"
+      :account="selectedAccount ?? {}" 
       @close="closeEditDialog"
       @account-updated="handleAccountUpdated"
     />
   </div>
 </template>
 
-<script setup>
-import { defineProps, defineEmits, computed, ref } from 'vue';
+<script setup lang="ts">
+import { defineProps, defineEmits, computed, ref, PropType } from 'vue';
 import request from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import EditAccountDialog from './EditAccountDialog.vue'; // 导入编辑对话框组件
+import EditAccountDialog from '@/components/EditAccountDialog.vue';
+import { Account } from '@/types/account';
 
 const props = defineProps({
   accounts: {
-    type: Array,
+    type: Array as PropType<Account[]>,
     required: true,
   },
 });
+
 const emit = defineEmits(['delete-account', 'edit-account', 'account-updated']);
 
 const processedAccounts = computed(() => {
-  return props.accounts.map(account => {
-    return {
-      ...account,
-      ctime: account.ctime ? account.ctime.slice(0, 10) : '', // 创建新对象，并添加修改后的 ctime 属性
-    };
-  });
+  return props.accounts.map(account => ({
+    ...account,
+    ctime: account.ctime ? account.ctime.slice(0, 10) : '',
+  }));
 });
 
-// 编辑对话框相关
 const editDialogVisible = ref(false);
-const selectedAccount = ref(null);
+const selectedAccount = ref<Account | null>(null);
 
-const confirmEdit = (row) => {
+const confirmEdit = (row: Account) => {
   selectedAccount.value = row;
   editDialogVisible.value = true;
 };
@@ -61,11 +60,12 @@ const closeEditDialog = () => {
   selectedAccount.value = null;
 };
 
-const handleAccountUpdated = (updatedAccount) => {
+const handleAccountUpdated = (updatedAccount: Account) => {
   emit('account-updated', updatedAccount);
   closeEditDialog();
 };
-const confirmDelete = (row) => {
+
+const confirmDelete = (row: Account) => {
   ElMessageBox.confirm(
     `确定要删除账号 ${row.account} 吗?`,
     '提示',
@@ -77,11 +77,9 @@ const confirmDelete = (row) => {
     }
   )
     .then(() => {
-      // 用户点击确定，执行删除操作
       deleteAccount(row);
     })
     .catch(() => {
-      // 用户点击取消，取消删除操作
       ElMessage({
         type: 'info',
         message: '已取消删除',
@@ -89,21 +87,24 @@ const confirmDelete = (row) => {
     });
 };
 
-const deleteAccount = async (row) => {
-  console.log('删除', row);
+const deleteAccount = async (row: Account) => {
   try {
     const res = await request.get(`/users/del?id=${row.id}`);
 
     if (res.data && res.data.code === 0) {
       ElMessage.success('删除成功');
-      // 触发 delete-account 事件，通知父组件
       emit('delete-account', row.id);
     } else {
       ElMessage.error(`删除失败: ${res.data?.msg || '未知错误'}`);
     }
-  } catch (error) {
-    console.error('删除账户发生异常:', error);
-    ElMessage.error(`删除账户发生异常: ${error.message || '服务器异常，请稍后重试'}`);
+  } catch (error: unknown) { // 明确声明 error 类型为 unknown
+    if (error instanceof Error) { // 检查 error 是否为 Error 类型
+      console.error('删除账户发生异常:', error.message);
+      ElMessage.error(`删除账户发生异常: ${error.message}`);
+    } else {
+      console.error('删除账户发生未知异常:', error);
+      ElMessage.error('删除账户发生异常: 服务器异常，请稍后重试');
+    }
   }
 };
 </script>
