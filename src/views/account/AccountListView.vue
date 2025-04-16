@@ -24,15 +24,7 @@ import Pagination from '@/components/Pagination.vue';
 import { ref, Ref } from 'vue';
 import request from '@/utils/request';
 import { ElMessage } from 'element-plus';
-
-// 定义 Account 类型
-interface Account {
-  id: number;
-  account: string;
-  userGroup: string;
-  ctime: string;
-  // 其他属性
-}
+import { Account } from '@/types/account';
 
 const loading = ref(true);
 const accounts: Ref<Account[]> = ref([]);
@@ -52,7 +44,7 @@ const getAccountList = async () => {
       console.error('获取账户列表失败:', res.data);
       ElMessage.error(`获取账户列表失败: ${res.data?.msg || '未知错误'}`);
     }
-  } catch (error) {
+  } catch (error:any) {
     console.error('获取账户列表发生异常:', error);
     ElMessage.error(`获取账户列表发生异常: ${error.message || '服务器异常，请稍后重试'}`);
   } finally {
@@ -99,7 +91,7 @@ const handleAccountUpdated = async (updatedAccount: Account) => {
       console.error('更新账户失败:', res.data);
       ElMessage.error(`更新账户失败: ${res.data?.msg || '未知错误'}`);
     }
-  } catch (error) {
+  } catch (error:any) {
     console.error('更新账户发生异常:', error);
     ElMessage.error(`更新账户发生异常: ${error.message || '服务器异常，请稍后重试'}`);
   }

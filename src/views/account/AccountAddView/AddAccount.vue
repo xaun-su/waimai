@@ -24,9 +24,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
-import { ElForm, ElFormItem, ElInput, ElButton, ElSelect, ElOption } from 'element-plus'
+import { ElForm, FormInstance } from 'element-plus' // 导入 FormInstance 类型
+import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
 
 const form = ref({
@@ -35,29 +36,32 @@ const form = ref({
   userGroup: '',
 })
 
-const formRef = ref(null)
+// 声明 formRef 的类型为 FormInstance
+const formRef = ref<FormInstance | null>(null)
 
-const handleSubmit = async () => { // 将 handleSubmit 函数声明为 async
-  formRef.value?.validate(async (valid) => { // 将 validate 的回调函数声明为 async
-    if (valid) {
-      try {
-        const response = await request.post('/users/add', form.value); // 添加 await 关键字
-        console.log(response.data);
-        if (response.data.code === 0) {
-          ElMessage.success('添加成功！');
-          formRef.value?.resetFields();
-          
+const handleSubmit = async () => {
+  if (formRef.value) {
+    formRef.value.validate(async (valid) => {
+      if (valid) {
+        try {
+          const response = await request.post('/users/add', form.value)
+          console.log(response.data)
+          if (response.data.code === 0) {
+            ElMessage.success('添加成功！')
+            formRef.value?.resetFields()
+          } else {
+            ElMessage.error('添加失败：' + response.data.message)
+          }
+        } catch (error) {
+          console.error('请求失败:', error)
+          ElMessage.error('请求失败！')
         }
-      } catch (error) {
-        console.error('请求失败:', error);
-        alert('提交失败！'); 
+      } else {
+        console.log('表单验证失败')
       }
-    } else {
-      console.log('表单验证失败');
-    }
-  });
-};
-
+    })
+  }
+}
 
 const resetForm = () => {
   formRef.value?.resetFields()
