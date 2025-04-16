@@ -67,7 +67,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted, computed } from 'vue';
-import request from '../utils/request.js';
+import request from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
 import { useRoute, useRouter } from 'vue-router'; // 引入 useRoute 和 useRouter

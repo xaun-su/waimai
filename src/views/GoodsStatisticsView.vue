@@ -5,7 +5,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import * as echarts from 'echarts';
-import request from '../utils/request';
+import request from '@/utils/request';
 // 表格
 const getGoodsStatisticsApi=async () => {
   const response = await request.get('/stats/goods')

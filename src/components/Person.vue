@@ -19,8 +19,8 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowDown } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
-import request from '../utils/request'; // 引入你的 axios 封装
-import { useUserStore } from '../stores/use';
+import request from '@/utils/request'; // 引入你的 axios 封装
+import { useUserStore } from '@/stores/use';
 
 const router = useRouter();
 const userStore = useUserStore();

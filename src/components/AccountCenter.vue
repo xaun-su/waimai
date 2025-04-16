@@ -15,7 +15,7 @@
               <span>{{ adminDetails.userGroup }}</span>
             </el-form-item>
             <el-form-item label="创建时间">
-              <span>{{ adminDetails.ctime }}</span>
+              <span>{{ formatDate(adminDetails.ctime) }}</span>
             </el-form-item>
           </el-form>
         </el-col>
@@ -23,11 +23,20 @@
         <el-col :span="8">
           <el-form label-width="100px">
             <el-form-item label="管理员头像">
-              <el-upload class="avatar-uploader" :action="uploadUrl" :headers="uploadHeaders" :show-file-list="false"
-                :before-upload="beforeAvatarUpload" :on-success="handleAvatarSuccess">
-                <el-image v-if="adminDetails.imgUrl"
-                  style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;" :src="adminDetails.imgUrl"
-                  alt="管理员头像" />
+              <el-upload
+                class="avatar-uploader"
+                :action="uploadUrl"
+                :headers="uploadHeaders"
+                :show-file-list="false"
+                :before-upload="beforeAvatarUpload"
+                :on-success="handleAvatarSuccess"
+              >
+                <el-image
+                  v-if="adminDetails.imgUrl"
+                  style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;"
+                  :src="adminDetails.imgUrl"
+                  alt="管理员头像"
+                />
                 <el-icon v-else class="avatar-uploader-icon">
                   <Plus />
                 </el-icon>
@@ -40,50 +49,77 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-import { ElCard, ElRow, ElCol, ElForm, ElFormItem, ElImage, ElUpload, ElMessage, ElIcon } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
-import request from '../utils/request'
-import { useUserStore } from '../stores/use'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'; // 引入 onMounted
+import {
+  ElCard,
+  ElRow,
+  ElCol,
+  ElForm,
+  ElFormItem,
+  ElImage,
+  ElUpload,
+  ElMessage,
+  ElIcon,
+} from 'element-plus';
+import { Plus } from '@element-plus/icons-vue';
+import request from '@/utils/request';
+import { useUserStore } from '@/stores/use';
 
-const user = useUserStore()
+const user = useUserStore();
 
-// 获取用户信息
-const adminDetails = ref({})
-const getAccountCenter = async () => {
-  try {
-    const response = await request.get(`/users/accountinfo?id=${user.id}`)
-    if (response.data.code === 0) {
-      console.log(response.data.accountInfo)
-      adminDetails.value = response.data.accountInfo
-
-      adminDetails.value.ctime = adminDetails.value.ctime.slice(0, 10)
-      //网站部署前
-      adminDetails.value.imgUrl=`http://8.137.157.16:9002${adminDetails.value.imgUrl}`
-      //网站部署更改
-      // adminDetails.value.imgUrl = response.imgUrl; // 更新头像 URL (保持相对路径)
-
-    } else {
-      ElMessage.error(response.data.msg || '获取账户信息失败')
-    }
-  } catch (error) {
-    ElMessage.error(`获取账户信息失败: ${error.message || '请稍后重试'}`)
-  }
+// 定义管理员信息类型
+interface AdminDetails {
+  id: number;
+  account: string;
+  userGroup: string;
+  ctime: string;
+  imgUrl: string;
 }
 
-(async () => {
-  await getAccountCenter();
-})();
+// 获取用户信息
+const adminDetails = ref<AdminDetails>({  // 使用类型声明
+  id: 0,
+  account: '',
+  userGroup: '',
+  ctime: '',
+  imgUrl: '',
+});
+
+const getAccountCenter = async () => {
+  try {
+    const response = await request.get(`/users/accountinfo?id=${user.id}`);
+    if (response.data.code === 0) {
+      console.log(response.data.accountInfo);
+      adminDetails.value = response.data.accountInfo;
+
+      // adminDetails.value.ctime = adminDetails.value.ctime.slice(0, 10);  // 移除这行，使用 formatDate 函数
+      //网站部署前
+      adminDetails.value.imgUrl = `http://8.137.157.16:9002${adminDetails.value.imgUrl}`;
+      //网站部署更改
+      // adminDetails.value.imgUrl = response.imgUrl; // 更新头像 URL (保持相对路径)
+    } else {
+      ElMessage.error(response.data.msg || '获取账户信息失败');
+    }
+  } catch (error: any) {  // 添加类型声明
+    ElMessage.error(`获取账户信息失败: ${error.message || '请稍后重试'}`);
+  }
+};
+
+// 格式化时间
+const formatDate = (dateString: string): string => {
+  if (!dateString) return '';
+  return dateString.slice(0, 10);
+};
 
 // 上传图片 URL 和请求头
-const uploadUrl = 'http://8.137.157.16:9002/users/avatar_upload'
+const uploadUrl = 'http://8.137.157.16:9002/users/avatar_upload';
 const uploadHeaders = {
   Authorization: `Bearer ${user.token}`, // 使用 Token 进行身份验证
 };
 
 // 上传前的文件校验
-const beforeAvatarUpload = (rawFile) => {
+const beforeAvatarUpload = (rawFile: File) => {  // 添加类型声明
   const isJPG = rawFile.type === 'image/jpeg' || rawFile.type === 'image/png';
   const isLt2M = rawFile.size / 1024 / 1024 < 2;
 
@@ -99,7 +135,7 @@ const beforeAvatarUpload = (rawFile) => {
 };
 
 // 头像上传成功后的回调
-const handleAvatarSuccess = (response, file) => {
+const handleAvatarSuccess = (response: any) => {  // 添加类型声明
   if (response.code === 0) {
     adminDetails.value.imgUrl = `http://8.137.157.16:9002${response.imgUrl}`; // 更新头像 URL
     ElMessage.success('头像上传成功');
@@ -111,11 +147,12 @@ const handleAvatarSuccess = (response, file) => {
     ElMessage.error(response.msg || '头像上传失败');
   }
 };
+
 // 验证 Token 是否过期
 const checkToken = async () => {
   try {
     const response = await request.get('/users/checktoken', {
-      params: { token: user.token }
+      params: { token: user.token },
     });
 
     if (response.data.code !== 0) {
@@ -123,17 +160,12 @@ const checkToken = async () => {
       return false;
     }
     return true;
-  } catch (error) {
+  } catch (error: any) {  // 添加类型声明
     ElMessage.error(`验证 Token 失败: ${error.message || '服务器异常，请稍后重试'}`);
     return false;
   }
 };
-// 调用验证 Token 并执行相关操作
-(async () => {
-  const tokenValid = await checkToken();
-  if (!tokenValid) return;
-  // 在 Token 验证通过后，继续执行获取账户信息或其他操作
-})();
+
 // // 更新头像到后端
 // const updateAvatar = async (imgUrl) => {
 //   console.log(user.id, imgUrl, user.token);
@@ -155,9 +187,11 @@ const checkToken = async () => {
 //   }
 // };
 
-
-
-
+onMounted(async () => {
+  const tokenValid = await checkToken();
+  if (!tokenValid) return;
+  await getAccountCenter();
+});
 </script>
 
 <style scoped>

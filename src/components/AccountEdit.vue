@@ -23,8 +23,8 @@
 <script setup>
 import { ref } from 'vue'
 import { ElCard, ElForm, ElFormItem, ElInput, ElButton } from 'element-plus'
-import { useUserStore } from '../stores/use'
-import request from '../utils/request'
+import { useUserStore } from '@/stores/use'
+import request from '@/utils/request'
 
 const user = useUserStore()
 console.log(user.id);

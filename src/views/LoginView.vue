@@ -29,9 +29,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
-import { useUserStore } from '../stores/use.js'; // 导入 userStore
+import { useUserStore } from '../stores/use'; // 导入 userStore
 import { ElMessage } from 'element-plus'; // 导入 ElMessage
-import request from '../utils/request.js'; // 导入封装的 request
+import request from '../utils/request'; // 导入封装的 request
 import { User, Lock } from '@element-plus/icons-vue'; // 导入图标
 
 const router = useRouter();

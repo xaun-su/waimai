@@ -22,7 +22,7 @@ import AccountList from '@/components/AccountList.vue';
 import Title from '@/components/Title.vue';
 import Pagination from '@/components/Pagination.vue';
 import { ref } from 'vue';
-import request from '../utils/request';
+import request from '@/utils/request';
 import { ElMessage } from 'element-plus';
 
 const loading = ref(true);

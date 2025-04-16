@@ -71,7 +71,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, computed } from 'vue';
 
-import request from '../utils/request';
+import request from '@/utils/request';
 
 // 搜索表单数据
 const searchForm = ref({

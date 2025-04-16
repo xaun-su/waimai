@@ -17,10 +17,9 @@
       <el-table-column label="商品图片">
         <template #default="scope">
           <!-- 网站部署前 -->
-          <el-image style="width: 50px; height: 50px" :src="'http://8.137.157.16:9002'+scope.row.imgUrl" :alt="scope.row.name" fit="cover" />
+          <el-image style="width: 50px; height: 50px" :src="'http://8.137.157.16:9002' + scope.row.imgUrl" :alt="scope.row.name" fit="cover" />
            <!-- 网站部署 -->
            <!-- <el-image style="width: 50px; height: 50px" :src="scope.row.imgUrl" :alt="scope.row.name" fit="cover" /> -->
-
         </template>
       </el-table-column>
       <el-table-column label="商品描述" prop="description" />
@@ -37,6 +36,7 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits } from 'vue';
 import { ElTable, ElTableColumn, ElButton, ElImage } from 'element-plus';
+
 // 定义 props
 const props = defineProps({
   goods: {
@@ -45,11 +45,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['delete-goods'],['edit-goods']);
+// 修复：将事件名称合并为一个数组
+const emit = defineEmits(['delete-goods', 'edit-goods']);
 
 const handleDelete = (row) => {  
   emit('delete-goods', row.id);
 };
+
 const handleEdit = (row) => {
   emit('edit-goods', row.id); // 触发 edit-goods 事件，并传递商品 id
 };

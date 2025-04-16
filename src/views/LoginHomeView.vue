@@ -8,7 +8,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Echarts from '@/components/Echarts.vue'
-import request from '../utils/request' // 引入你的 request 库
+import request from '@/utils/request' // 引入你的 request 库
 import { ElMessage } from 'element-plus';
 // 首页数据
 const homeChartOption = ref({

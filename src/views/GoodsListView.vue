@@ -17,7 +17,7 @@ import Title from '@/components/Title.vue';
 import GoodsList from '@/components/GoodsList.vue';
 import Pagination from '@/components/Pagination.vue';
 import { ref, onMounted } from 'vue';
-import request from '../utils/request';
+import request from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { useRouter } from 'vue-router';
 const router = useRouter();

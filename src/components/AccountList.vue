@@ -26,7 +26,7 @@
 
 <script setup>
 import { defineProps, defineEmits, computed, ref } from 'vue';
-import request from '../utils/request';
+import request from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import EditAccountDialog from './EditAccountDialog.vue'; // 导入编辑对话框组件
 
