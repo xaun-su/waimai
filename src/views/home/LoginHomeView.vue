@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts" >
 import { ref, onMounted } from 'vue'
 import Echarts from '@/components/Echarts.vue'
 import request from '@/utils/request' // 引入你的 request 库

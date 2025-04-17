@@ -25,7 +25,9 @@ interface GoodsStatisticsResponse {
 // 表格
 const getGoodsStatisticsApi = async (): Promise<GoodsStatisticsResponse> => {
   const response = await request.get('/stats/goods');
-  return response as GoodsStatisticsResponse;
+  console.log(response);
+  
+  return response.data as GoodsStatisticsResponse;
 };
 
 const chartDom = ref();

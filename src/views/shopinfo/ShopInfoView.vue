@@ -120,17 +120,19 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script  setup>
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { ElForm, ElFormItem, ElInput, ElUpload, ElIcon, ElCheckbox, ElCheckboxGroup, ElTimePicker, ElButton } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
 import request from '@/utils/request'; // 引入你的 request 库
 
-// 定义接口地址
-const uploadUrl ='/shop/upload';
-const shopEditUrl ='/shop/edit';
 
+// 定义接口地址
+const uploadUrl ='http://8.137.157.16:9002/shop/upload';
+console.log(uploadUrl)
+const shopEditUrl ='/shop/edit';
+const baseURL='http://8.137.157.16:9002'
 // 店铺信息
 const shopInfo = ref({
   id: null,
@@ -143,7 +145,7 @@ const shopInfo = ref({
   score: null,
   sellCount: null,
   supports: [],
-  pics: ['', '', '', ''],
+  pics: [],
   date: ['', ''],
   minPrice: null,
 });
@@ -152,101 +154,104 @@ const shopInfo = ref({
 const getShopInfo = async () => {
   try {
     const response = await request.get('/shop/info');
-    console.log('商铺数据',response);
+
+    console.log('商铺数据',response.data.data);
     
-    // if (response.data) {
-    //   shopInfo.value = {
-    //     id: response.data.data.id,
-    //     name: response.data.data.name,
-    //     bulletin: response.data.data.bulletin,
-    //     avatar: baseUrl+response.data.data.avatar, // 拼接完整的图片URL
-    //     deliveryPrice: response.data.data.deliveryPrice,
-    //     deliveryTime: response.data.data.deliveryTime,
-    //     description: response.data.data.description,
-    //     score: response.data.data.score,
-    //     sellCount: response.data.data.sellCount,
-    //     supports: response.data.data.supports,
-    //     pics: response.data.data.pics.map(pic => baseUrl+'/upload/shop/'+ pic), // 拼接完整的图片URL
-    //     date: response.data.data.date,
-    //     minPrice: response.data.data.minPrice,
-    //   };
-    // } else {
-    //   ElMessage.error('获取店铺信息失败');
-    // }
+    if (response.data) {
+      shopInfo.value = {
+        id: response.data.data.id,
+        name: response.data.data.name,
+        bulletin: response.data.data.bulletin,
+        avatar: baseURL+response.data.data.avatar, // 拼接完整的图片URL
+        deliveryPrice: response.data.data.deliveryPrice,
+        deliveryTime: response.data.data.deliveryTime,
+        description: response.data.data.description,
+        score: response.data.data.score,
+        sellCount: response.data.data.sellCount,
+        supports: response.data.data.supports,
+        pics: response.data.data.pics.map(pic => baseURL+ pic), // 拼接完整的图片URL
+        date: response.data.data.date,
+        minPrice: response.data.data.minPrice,
+      };
+    } else {
+      ElMessage.error('获取店铺信息失败');
+    }
   } catch (error) {
     console.error(error);
     ElMessage.error('获取店铺信息失败');
   }
 };
 
-// // 上传头像成功回调
-// const handleAvatarSuccess = (response) => {
-//   if (response.code === 0) {
-//     shopInfo.value.avatar = baseUrl + '/upload/shop/' + response.imgUrl; // 拼接完整的图片URL
-//     ElMessage.success('头像上传成功');
-//   } else {
-//     ElMessage.error('头像上传失败: ' + response.msg);
-//   }
-// };
+// 上传头像成功回调
+const handleAvatarSuccess = (response) => {
+  console.log(response);
+  
+  if (response.code === 0) {
+    shopInfo.value.avatar = baseURL+ response.imgUrl; // 拼接完整的图片URL
+    ElMessage.success('头像上传成功');
+  } else {
+    ElMessage.error('头像上传失败: ' + response.msg);
+  }
+};
 
-// // 上传图片成功回调
-// const handleImageSuccess = (response, file, fileList) => {
-//   if (response.code === 0) {
-//     // 找到当前上传的图片对应的索引
-//     const index = fileList.length - 1; // 假设上传顺序与显示顺序一致
-//     shopInfo.value.pics[index] = baseUrl + '/upload/shop/' + response.imgUrl; // 拼接完整的图片URL
-//     ElMessage.success(`图片 ${index + 1} 上传成功`);
-//   } else {
-//     ElMessage.error('图片上传失败: ' + response.msg);
-//   }
-// };
+// 上传图片成功回调
+const handleImageSuccess = (response, file, fileList) => {
+  if (response.code === 0) {
+    // 找到当前上传的图片对应的索引
+    const index = fileList.length - 1; // 假设上传顺序与显示顺序一致
+    shopInfo.value.pics[index] = baseURL + response.imgUrl; // 拼接完整的图片URL
+    ElMessage.success(`图片 ${index + 1} 上传成功`);
+  } else {
+    ElMessage.error('图片上传失败: ' + response.msg);
+  }
+};
 
-// // 上传头像前的校验
-// const beforeAvatarUpload = (file) => {
-//   const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-//   const isLt2M = file.size / 1024 / 1024 < 2;
+// 上传头像前的校验
+const beforeAvatarUpload = (file) => {
+  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+  const isLt2M = file.size / 1024 / 1024 < 2;
 
-//   if (!isJPG) {
-//     ElMessage.error('上传头像图片只能是 JPG 或 PNG 格式!');
-//   }
-//   if (!isLt2M) {
-//     ElMessage.error('上传头像图片大小不能超过 2MB!');
-//   }
-//   return isJPG && isLt2M;
-// };
+  if (!isJPG) {
+    ElMessage.error('上传头像图片只能是 JPG 或 PNG 格式!');
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传头像图片大小不能超过 2MB!');
+  }
+  return isJPG && isLt2M;
+};
 
-// // 保存店铺信息
-// const handleEdit = async () => {
-//   try {
-//     // 构造请求体
-//     const requestBody = {
-//       id: shopInfo.value.id,
-//       name: shopInfo.value.name,
-//       bulletin: shopInfo.value.bulletin,
-//       avatar: shopInfo.value.avatar.split('/').pop(), // 只发送图片名
-//       deliveryPrice: shopInfo.value.deliveryPrice,
-//       deliveryTime: shopInfo.value.deliveryTime,
-//       description: shopInfo.value.description,
-//       score: shopInfo.value.score,
-//       sellCount: shopInfo.value.sellCount,
-//       supports: shopInfo.value.supports,
-//       date: shopInfo.value.date,
-//       pics: shopInfo.value.pics.map(pic => pic.split('/').pop()), // 只发送图片名
-//       minPrice: shopInfo.value.minPrice,
-//     };
+// 保存店铺信息
+const handleEdit = async () => {
+  try {
+    // 构造请求体
+    const requestBody = {
+      id: shopInfo.value.id,
+      name: shopInfo.value.name,
+      bulletin: shopInfo.value.bulletin,
+      avatar: shopInfo.value.avatar.split('/').pop(), // 只发送图片名
+      deliveryPrice: shopInfo.value.deliveryPrice,
+      deliveryTime: shopInfo.value.deliveryTime,
+      description: shopInfo.value.description,
+      score: shopInfo.value.score,
+      sellCount: shopInfo.value.sellCount,
+      supports: shopInfo.value.supports,
+      date: shopInfo.value.date,
+      pics: shopInfo.value.pics.map(pic => pic.split('/').pop()), // 只发送图片名
+      minPrice: shopInfo.value.minPrice,
+    };
 
-//     const response = await request.post(shopEditUrl, requestBody);
+    const response = await request.post(shopEditUrl, requestBody);
 
-//     if (response.data.code === 0) {
-//       ElMessage.success('修改店铺信息成功');
-//     } else {
-//       ElMessage.error('修改店铺信息失败: ' + response.data.msg);
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     ElMessage.error('修改店铺信息失败');
-//   }
-// };
+    if (response.data.code === 0) {
+      ElMessage.success('修改店铺信息成功');
+    } else {
+      ElMessage.error('修改店铺信息失败: ' + response.data.msg);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('修改店铺信息失败');
+  }
+};
 
 onMounted(async () => {
   await getShopInfo();
