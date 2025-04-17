@@ -20,6 +20,8 @@ import { ref, onMounted } from 'vue';
 import request from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { useRouter } from 'vue-router';
+import {good_del ,good_list} from '@/api/config';
+
 const router = useRouter();
 
 const goods = ref([]);
@@ -33,7 +35,7 @@ const getGoodsList = async () => {
   loading.value = true;
   try {
     const res = await request.get(
-      `/goods/list?currentPage=${currentPage.value}&pageSize=${pageSize.value}`
+      `${good_list}?currentPage=${currentPage.value}&pageSize=${pageSize.value}`
     );
     console.log(res);
     if (res.data && res.data.code === 0) {
@@ -68,7 +70,7 @@ const handleSizeChange = (size :number) => {
 const handleGoodsDeleted = async (deletedGoodsId :number) => {
   console.log(deletedGoodsId);
   // 过滤掉已删除的账户
-  const res= await request.get(`/goods/del?id=${deletedGoodsId}`);
+  const res= await request.get(`${good_del}?id=${deletedGoodsId}`);
   goods.value = goods.value.filter((goods:any) => goods.id !== deletedGoodsId);
   total.value--; // 更新总条数
 

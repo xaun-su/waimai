@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../../stores/use'; // 导入 userStore
@@ -71,7 +71,7 @@ const handleLogin = async () => {
       // 登录失败
       errorMessage.value = response.data.msg || '登录失败';
     }
-  } catch (error) {
+  } catch (error : any) {
     // 处理错误
     console.error('登录失败', error);
     errorMessage.value = error.message || '服务器异常，请稍后重试';

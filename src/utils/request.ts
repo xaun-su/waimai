@@ -2,11 +2,7 @@ import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosE
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/use.js';
 import { ElMessage } from 'element-plus'; // 导入 ElMessage 组件
-
-// 定义基础URL，方便后续维护和修改
-export const baseURL = 'http://8.137.157.16:9002';
-// 网站部署
-// export const baseURL = '/api'
+import { baseURL } from '@/api/config';
 
 // 定义响应数据类型
 interface ResponseData<T = any> {

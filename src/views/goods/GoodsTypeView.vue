@@ -6,7 +6,7 @@
         <el-button type="primary" @click="openDialog">添加分类</el-button>
       </template>
     </Title>
-    <GoodsType :goodsType="goodsType" @delete="handleDeleteCategory" @edit="openEditDialog"/>
+    <GoodsType :goodsType="goodsType" @delete="handleDeleteCategory" @update="handleUpdata"/>
     <Pagination
       :current-page="currentPage"
       :page-size="pageSize"
@@ -18,7 +18,7 @@
     <!-- 弹出框 -->
     <el-dialog
       v-model="dialogVisible"
-      :title="isEdit ? '编辑分类' : '添加分类'"
+      :title=" '添加分类'"
       width="30%"
       @close="closeDialog"
     >
@@ -47,7 +47,7 @@ import GoodsType from '@/views/goods/GoodsTypeView/GoodsType.vue';
 import { ref } from 'vue';
 import request from '@/utils/request';
 import { ElMessage } from 'element-plus';
-import { ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElSwitch } from 'element-plus'; // 引入 Element Plus 组件
+import { good_cate_edit, good_cate_add, good_cate_del, good_cate_list } from '@/api/config';
 
 const goodsType = ref([]);
 const currentPage = ref(1);
@@ -66,7 +66,7 @@ const currentEditId = ref(null); // 存储当前编辑的分类ID
 const getTypeList = async () => {
   try {
     const res = await request.get(
-      `/goods/catelist?currentPage=${currentPage.value}&pageSize=${pageSize.value}`
+      `${good_cate_list}?currentPage=${currentPage.value}&pageSize=${pageSize.value}`
     );
     goodsType.value = res.data.data;
     total.value = res.data.total;
@@ -89,7 +89,7 @@ const handleSizeChange = (size :number) => {
 
 const handleDeleteCategory = async (id :number) => {
   try {
-    const res = await request.delete(`/goods/delcate?id=${id}`);
+    const res = await request.get(`${good_cate_del}?id=${id}`);
     console.log(res.data.msg);
     ElMessage.success('删除成功');
     getTypeList();
@@ -123,15 +123,26 @@ const closeDialog = () => {
 // 确认提交
 const handleConfirm = async () => {
   try {
-    let res;
-    if (isEdit.value) {
-      // 编辑
-      res = await request.put(`/goods/updatecate?id=${currentEditId.value}`, form.value);
-    } else {
-      // 添加
-      res = await request.post('/goods/addcate', form.value);
-    }
+    // 添加
+    const res = await request.post(good_cate_add, form.value);
+    console.log(res);
+    ElMessage.success(res.data.msg || '操作成功');
+    getTypeList(); // 刷新列表
+    closeDialog();
+  } catch (error) {
+    ElMessage.error('提交失败');
+  }
+};
 
+// 编辑请求
+const handleUpdata = async (updatedData :any) => {
+  try {
+    const res = await request.post(good_cate_edit, {
+      id: updatedData.id,
+      cateName: updatedData.cateName,
+      state: updatedData.state,
+    });
+    console.log(res);
     ElMessage.success(res.data.msg || '操作成功');
     getTypeList(); // 刷新列表
     closeDialog();

@@ -36,7 +36,7 @@
       <el-form-item label="商品图片" prop="imgUrl">
         <el-upload
           class="upload-demo"
-          action="http://8.137.157.16:9002/goods/goods_img_upload"
+          :action="good_img"
           :before-upload="beforeUpload"
           :on-success="handleSuccess"
           :on-error="handleError"
@@ -71,14 +71,13 @@ import request from '@/utils/request';
 import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
 import { useRoute, useRouter } from 'vue-router'; // 引入 useRoute 和 useRouter
-
+import {good_info ,good_add,good_edit,good_img,good_category,baseURL} from '@/api/config';
 const route = useRoute(); // 获取 route 实例
 const router = useRouter(); // 获取 router 实例
 
 interface GoodsType {
   id: number;
   cateName: string;
-  // 其他属性
 }
 
 const goodsType = ref<GoodsType[]>([]);
@@ -116,7 +115,7 @@ const headers = {
 // 获取商品分类信息
 const getGoodsType = async () => {
   try {
-    const response = await request.get('/goods/categories');
+    const response = await request.get(good_category);
     goodsType.value = response.data.categories;
   } catch (error) {
     ElMessage.error('获取商品分类失败');
@@ -126,7 +125,7 @@ const getGoodsType = async () => {
 // 获取商品信息（修改时）
 const getGoodsInfo = async (id: string | undefined) => {
   try {
-    const response = await request.get(`/goods/info?id=${id}`);
+    const response = await request.get(`${good_info}?id=${id}`);
     if (response.data && response.data.code === 0) {
       // 将获取到的商品信息填充到表单中
       Object.assign(form, response.data.data);
@@ -148,10 +147,10 @@ const onSubmit = async () => {
         form.imgUrl=form.imgUrl.replace('/upload/imgs/goods_img/', '');
         if (isEdit.value) {
           // 修改商品
-          response = await request.post('/goods/edit', form);
+          response = await request.post(good_edit, form);
         } else {
           // 添加商品
-          response = await request.post('/goods/add', form);
+          response = await request.post(good_add, form);
         }
 
         if (response.data.code === 0) {

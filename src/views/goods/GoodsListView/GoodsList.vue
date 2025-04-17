@@ -17,7 +17,7 @@
       <el-table-column label="商品图片">
         <template #default="scope">
           <!-- 网站部署前 -->
-          <el-image style="width: 50px; height: 50px" :src="'http://8.137.157.16:9002' + scope.row.imgUrl" :alt="scope.row.name" fit="cover" />
+          <el-image style="width: 50px; height: 50px" :src="baseURL + scope.row.imgUrl" :alt="scope.row.name" fit="cover" />
            <!-- 网站部署 -->
            <!-- <el-image style="width: 50px; height: 50px" :src="scope.row.imgUrl" :alt="scope.row.name" fit="cover" /> -->
         </template>
@@ -36,8 +36,7 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits } from 'vue';
 import { ElTable, ElTableColumn, ElButton, ElImage } from 'element-plus';
-import { log } from 'console';
-
+import {baseURL} from '@/api/config';
 // 定义 props
 const props = defineProps({
   goods: {

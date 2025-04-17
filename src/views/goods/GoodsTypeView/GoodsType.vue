@@ -46,7 +46,7 @@
 
 <script lang="ts" setup>
 import { defineProps, defineEmits, ref } from 'vue';
-import { ElTable, ElTableColumn, ElButton, ElPagination, ElSwitch, ElMessageBox, ElMessage, ElInput } from 'element-plus';
+import { ElTable, ElTableColumn, ElButton, ElSwitch, ElMessageBox, ElMessage, ElInput } from 'element-plus';
 
 // 定义 props
 const props = defineProps({
@@ -61,7 +61,7 @@ const emit = defineEmits(['delete', 'update']);
 
 // 定义 editing 状态
 const editing = ref<number | null>(null);
-  const originalData = ref<Record<number, any>>({});
+const originalData = ref<Record<number, any>>({});
 
 // 编辑
 const handleEdit = (row :any) => {
@@ -72,9 +72,9 @@ const handleEdit = (row :any) => {
 // 保存
 const handleSave = (row :any) => {
   editing.value = null;
-  if (originalData.value[row.id].state !== row.state || originalData.value[row.id].cateName !== row.cateName) {    
-    console.log(row);
-    emit('update', row);
+  if (originalData.value[row.id].state !== row.state || originalData.value[row.id].cateName !== row.cateName) {
+    // 通过 emit 触发父组件的更新
+    emit('update', { ...row });  // 传递修改后的行数据
   }
   delete originalData.value[row.id];
 };
@@ -98,10 +98,7 @@ const handleDelete = (row :any) => {
   )
     .then(() => {
       // 用户点击确定，触发 delete 事件
-      console.log(row.id);
-
-      
-      emit('delete', row.id);
+      emit('delete', row.id);  // 删除分类 ID
       ElMessage.success('删除成功');
     })
     .catch(() => {
@@ -110,6 +107,7 @@ const handleDelete = (row :any) => {
     });
 };
 </script>
+
 
 <style scoped>
 .category-list {

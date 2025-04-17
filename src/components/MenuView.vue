@@ -90,7 +90,8 @@ const handleClose = (key: string | number, keyPath: Array<string | number>) => {
   console.log('close', key, keyPath);
 };
 
-const handleMenuItemClick = (index:string) => {
+const handleMenuItemClick = (index:
+string) => {
   console.log('clicked', index);
 
   switch (index) {

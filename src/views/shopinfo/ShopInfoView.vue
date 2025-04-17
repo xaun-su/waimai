@@ -77,7 +77,7 @@
       </el-form-item>
 
       <el-form-item label="起送价格">
-        <el-input v-model="shopInfo.minPrice" type="number" />
+        <el-input v-model="shopInfo.deliveryPrice" type="number" />
       </el-form-item>
 
       <el-form-item label="送达时间">
@@ -135,7 +135,7 @@ const shopEditUrl ='/shop/edit';
 const baseURL='http://8.137.157.16:9002'
 // 店铺信息
 const shopInfo = ref({
-  id: null,
+  id: 1, // 默认为 0
   name: '',
   bulletin: '',
   avatar: '',
@@ -157,21 +157,21 @@ const getShopInfo = async () => {
 
     console.log('商铺数据',response.data.data);
     
-    if (response.data) {
+    if (response.data && response.data.data) {
       shopInfo.value = {
-        id: response.data.data.id,
-        name: response.data.data.name,
-        bulletin: response.data.data.bulletin,
-        avatar: baseURL+response.data.data.avatar, // 拼接完整的图片URL
-        deliveryPrice: response.data.data.deliveryPrice,
-        deliveryTime: response.data.data.deliveryTime,
-        description: response.data.data.description,
-        score: response.data.data.score,
-        sellCount: response.data.data.sellCount,
-        supports: response.data.data.supports,
-        pics: response.data.data.pics.map(pic => baseURL+ pic), // 拼接完整的图片URL
-        date: response.data.data.date,
-        minPrice: response.data.data.minPrice,
+        id: response.data.data.id || 1, // 确保 id 不为 null
+        name: response.data.data.name || '',
+        bulletin: response.data.data.bulletin || '',
+        avatar: baseURL+response.data.data.avatar || '', // 拼接完整的图片URL
+        deliveryPrice: response.data.data.deliveryPrice || null,
+        deliveryTime: response.data.data.deliveryTime || null,
+        description: response.data.data.description || '',
+        score: response.data.data.score || null,
+        sellCount: response.data.data.sellCount || null,
+        supports: response.data.data.supports || [],
+        pics: (response.data.data.pics || []).map(pic => baseURL+ pic), // 拼接完整的图片URL
+        date: response.data.data.date || ['', ''],
+        minPrice: response.data.data.minPrice || null,
       };
     } else {
       ElMessage.error('获取店铺信息失败');
@@ -234,11 +234,13 @@ const handleEdit = async () => {
       description: shopInfo.value.description,
       score: shopInfo.value.score,
       sellCount: shopInfo.value.sellCount,
-      supports: shopInfo.value.supports,
-      date: shopInfo.value.date,
-      pics: shopInfo.value.pics.map(pic => pic.split('/').pop()), // 只发送图片名
+      supports: JSON.stringify(shopInfo.value.supports), 
+      date: JSON.stringify(shopInfo.value.date), 
+      pics: JSON.stringify(shopInfo.value.pics.map(pic => pic.split('/').pop())), 
       minPrice: shopInfo.value.minPrice,
     };
+
+    console.log('请求体', requestBody); // 打印请求体
 
     const response = await request.post(shopEditUrl, requestBody);
 
@@ -252,6 +254,7 @@ const handleEdit = async () => {
     ElMessage.error('修改店铺信息失败');
   }
 };
+
 
 onMounted(async () => {
   await getShopInfo();
