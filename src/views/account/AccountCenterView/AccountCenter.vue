@@ -65,6 +65,8 @@ import {
 import { Plus } from '@element-plus/icons-vue';
 import request from '@/utils/request';
 import { useUserStore } from '@/stores/use';
+import {account_info ,account_avatar} from '@/api/account'
+import {baseURL } from '@/api/config'
 
 const user = useUserStore();
 
@@ -88,14 +90,14 @@ const adminDetails = ref<AdminDetails>({  // 使用类型声明
 
 const getAccountCenter = async () => {
   try {
-    const response = await request.get(`/users/accountinfo?id=${user.id}`);
+    const response = await request.get(`${account_info}?id=${user.id}`);
     if (response.data.code === 0) {
       console.log(response.data.accountInfo);
       adminDetails.value = response.data.accountInfo;
 
       // adminDetails.value.ctime = adminDetails.value.ctime.slice(0, 10);  // 移除这行，使用 formatDate 函数
       //网站部署前
-      adminDetails.value.imgUrl = `http://8.137.157.16:9002${adminDetails.value.imgUrl}`;
+      adminDetails.value.imgUrl = `${baseURL}${adminDetails.value.imgUrl}`;
       //网站部署更改
       // adminDetails.value.imgUrl = response.imgUrl; // 更新头像 URL (保持相对路径)
     } else {
@@ -113,7 +115,7 @@ const formatDate = (dateString: string): string => {
 };
 
 // 上传图片 URL 和请求头
-const uploadUrl = 'http://8.137.157.16:9002/users/avatar_upload';
+const uploadUrl = `${baseURL}${account_avatar}`;
 const uploadHeaders = {
   Authorization: `Bearer ${user.token}`, // 使用 Token 进行身份验证
 };
@@ -137,7 +139,7 @@ const beforeAvatarUpload = (rawFile: File) => {  // 添加类型声明
 // 头像上传成功后的回调
 const handleAvatarSuccess = (response: any) => {  // 添加类型声明
   if (response.code === 0) {
-    adminDetails.value.imgUrl = `http://8.137.157.16:9002${response.imgUrl}`; // 更新头像 URL
+    adminDetails.value.imgUrl = `${baseURL}${response.imgUrl}`; // 更新头像 URL
     ElMessage.success('头像上传成功');
     console.log(response.imgUrl);
 
@@ -165,28 +167,6 @@ const checkToken = async () => {
     return false;
   }
 };
-
-// // 更新头像到后端
-// const updateAvatar = async (imgUrl) => {
-//   console.log(user.id, imgUrl, user.token);
-
-//   try {
-//     const fullImgUrl = `http://8.137.157.16:9002${imgUrl}`;
-//     const response = await request.post('/users/avataredit', {
-//       id: Number(user.id),
-//       imgUrl: fullImgUrl,
-//     });
-
-//     if (response.data.code === 0) {
-//       ElMessage.success('头像更新成功');
-//     } else {
-//       ElMessage.error(response.data.msg || '头像更新失败');
-//     }
-//   } catch (error) {
-//     ElMessage.error(`更新头像发生异常: ${error.message || '服务器异常，请稍后重试'}`);
-//   }
-// };
-
 onMounted(async () => {
   const tokenValid = await checkToken();
   if (!tokenValid) return;

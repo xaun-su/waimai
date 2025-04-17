@@ -26,6 +26,8 @@ import { ElForm, ElFormItem, ElInput, ElButton, FormRules, FormInstance, ElMessa
 import { useUserStore } from '@/stores/use';
 import request from '@/utils/request';
 import { useRouter } from 'vue-router';
+import { account_password } from '@/api/account';
+
 const { push } = useRouter();
 
 // 定义表单数据类型
@@ -75,7 +77,7 @@ const handleSubmit = async () => {
   formRef.value?.validate(async (valid) => {
     if (valid) {
       try {
-        const response = await request.post(`/users/editpwd`, {
+        const response = await request.post(account_password, {
           oldPwd: form.oldPassword,
           newPwd: form.newPassword,
           newPwd1: form.confirmPassword,

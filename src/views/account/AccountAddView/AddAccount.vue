@@ -29,6 +29,7 @@ import { ref } from 'vue'
 import { ElForm, FormInstance } from 'element-plus' // 导入 FormInstance 类型
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
+import {account_add} from '@/api/account'
 
 const form = ref({
   account: '',
@@ -44,7 +45,7 @@ const handleSubmit = async () => {
     formRef.value.validate(async (valid) => {
       if (valid) {
         try {
-          const response = await request.post('/users/add', form.value)
+          const response = await request.post(account_add, form.value)
           console.log(response.data)
           if (response.data.code === 0) {
             ElMessage.success('添加成功！')

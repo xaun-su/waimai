@@ -21,6 +21,7 @@ import { ArrowDown } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import request from '@/utils/request'; // 引入你的 axios 封装
 import { useUserStore } from '@/stores/use';
+import {account_info} from '@/api/account'
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -34,7 +35,7 @@ const userId = userStore.id
 // 获取账户信息
 const getAccountCenter = async () => {
   try {
-    const response = await request.get(`/users/accountinfo?id=${userId}`);
+    const response = await request.get(`${account_info}?id=${userId}`);
     if (response.data.code === 0) {
       console.log(response.data.accountInfo);
       username.value = response.data.accountInfo.account;

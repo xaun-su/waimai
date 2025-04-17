@@ -30,7 +30,7 @@ import request from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import EditAccountDialog from '@/views/account/AccountEditView/children/EditAccountDialog.vue';
 import { Account } from '@/types/account';
-
+import {account_delete} from '@/api/account';
 const props = defineProps({
   accounts: {
     type: Array as PropType<Account[]>,
@@ -89,7 +89,7 @@ const confirmDelete = (row: Account) => {
 
 const deleteAccount = async (row: Account) => {
   try {
-    const res = await request.get(`/users/del?id=${row.id}`);
+    const res = await request.get(`${account_delete}?id=${row.id}`);
 
     if (res.data && res.data.code === 0) {
       ElMessage.success('删除成功');

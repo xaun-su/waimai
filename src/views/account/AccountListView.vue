@@ -25,6 +25,7 @@ import { ref, Ref } from 'vue';
 import request from '@/utils/request';
 import { ElMessage } from 'element-plus';
 import { Account } from '@/types/account';
+import { account_list,account_update } from '@/api/account';
 
 const loading = ref(true);
 const accounts: Ref<Account[]> = ref([]);
@@ -35,7 +36,7 @@ const total = ref(373); // 初始化 total 为 373
 const getAccountList = async () => {
   loading.value = true;
   try {
-    const res = await request.get(`/users/list?currentPage=${currentPage.value}&pageSize=${pageSize.value}`);
+    const res = await request.get(`${account_list}?currentPage=${currentPage.value}&pageSize=${pageSize.value}`);
     console.log(res);
     if (res.data && res.data.code === 0) {
       accounts.value = res.data.data;
@@ -84,7 +85,7 @@ const handleAccountUpdated = async (updatedAccount: Account) => {
   }
 
   try {
-    const res = await request.post(`/users/edit?id=${updatedAccount.id}`, updatedAccount);
+    const res = await request.post(`${account_update}?id=${updatedAccount.id}`, updatedAccount);
     if (res.data && res.data.code === 0) {
       ElMessage.success('更新成功');
     } else {
