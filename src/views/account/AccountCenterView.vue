@@ -8,6 +8,10 @@
 <script setup lang="ts">
 import Title from '@/components/Title.vue'
 import AccountCenter from './AccountCenterView/AccountCenter.vue';
+
+defineOptions({
+  name: 'accountCenter'
+})
 </script>
 
 <style lang="less" scoped>

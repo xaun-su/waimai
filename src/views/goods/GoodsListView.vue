@@ -21,6 +21,11 @@ import request from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { useRouter } from 'vue-router';
 import {good_del ,good_list} from '@/api/config';
+import { de } from 'element-plus/es/locale';
+
+defineOptions({
+  name: 'goodsList' 
+});
 
 const router = useRouter();
 

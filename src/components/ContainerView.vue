@@ -6,10 +6,14 @@
       </el-aside>
       <el-container>
         <el-header>
-             <Breadcrumb />    
+          <Breadcrumb />
         </el-header>
-        <el-main>    
-          <router-view />
+        <el-main>
+            <router-view v-slot="{ Component }">
+              <keep-alive :include="cachedComponents">
+              <component :is="Component" />
+            </keep-alive>
+            </router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -19,6 +23,46 @@
 <script setup lang="ts">
 import MenuView from '@/components/MenuView.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
+import { computed, ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+
+// 全局缓存列表
+const cachedComponentNames = ref(new Set<string>());
+
+// 计算属性，用于返回需要缓存的组件名数组
+const cachedComponents = computed(() => {
+  console.log('当前缓存列表:', Array.from(cachedComponentNames.value));
+  return Array.from(cachedComponentNames.value);
+});
+
+// 监听路由变化，更新缓存列表
+watch(
+  () => route.name,
+  (newRouteName) => {
+    console.log('路由变化:', newRouteName);
+    route.matched.forEach((record) => {
+      if (record.components?.default?.name && record.meta.keepAlive) {
+        cachedComponentNames.value.add(record.components.default.name);
+        console.log(`添加 ${record.components.default.name} 到缓存列表`);
+      }
+    });
+  },
+  { immediate: true }
+);
+
+// 调试：在组件挂载后打印当前路由信息
+onMounted(() => {
+  console.log('组件挂载，当前路由信息:', route);
+  console.log('组件挂载，当前路由匹配:', route.matched);
+});
+
+// 调试：监听路由器的 `beforeEach` 导航守卫，打印路由变化信息
+router.beforeEach((to, from) => {
+  console.log('导航守卫：从', from.path, '到', to.path);
+});
 </script>
 
 <style lang="less" scoped>
@@ -59,7 +103,7 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
     padding: 0;
     background-color: #fff;
     text-align: left; /* 内容文字左对齐 */
-    margin: 20px; 
+    margin: 20px;
     box-sizing: border-box; /* 确保 padding 不会增加元素尺寸 */
     overflow: auto; /* 内容超出时显示滚动条 */
   }

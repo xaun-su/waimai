@@ -27,6 +27,11 @@ import { ElMessage } from 'element-plus';
 import { Account } from '@/types/account';
 import { account_list,account_update } from '@/api/account';
 
+// 添加组件的 name 属性
+defineOptions({
+  name: 'AccountListView' 
+});
+
 const loading = ref(true);
 const accounts: Ref<Account[]> = ref([]);
 const currentPage = ref(1);

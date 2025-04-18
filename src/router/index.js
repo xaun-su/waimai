@@ -17,6 +17,7 @@ import PermissionInfoView from '../views/permission/PermissionInfoView.vue';
 import RolePermissionView from '../views/permission/RolePermissionView.vue';
 import AddGood from '../components/addGood.vue';
 import LoginHomeView from '../views/home/LoginHomeView.vue';
+
 const routes = [
   {
     path: '/',
@@ -30,7 +31,7 @@ const routes = [
   {
     path: '/home',
     name: 'home',
-    component: HomeView,  
+    component: HomeView,
     meta: {
       breadcrumb: [
         { label: '首页' }
@@ -53,18 +54,20 @@ const routes = [
           breadcrumb: [
             { label: '账号管理', path: '/accountList' },
             { label: '账户列表' }
-          ]
+          ],
+          keepAlive: true
         }
       },
       {
         path: '/accountAdd',
-        name: 'accountAdd',
+        name: 'AccountAdd',
         component: AccountAddView,
         meta: {
           breadcrumb: [
             { label: '账号管理', path: '/accountList' },
             { label: '添加账户' }
-          ]
+          ],
+          keepAlive: true
         }
       },
       {
@@ -75,7 +78,8 @@ const routes = [
           breadcrumb: [
             { label: '账号管理', path: '/accountList' },
             { label: '个人中心' }
-          ]
+          ],
+          keepAlive: true
         }
       },
       {
@@ -97,7 +101,8 @@ const routes = [
           breadcrumb: [
             { label: '商品管理', path: '/goodsList' },
             { label: '商品列表' }
-          ]
+          ],
+          keepAlive: true
         }
       },
       {
@@ -130,7 +135,8 @@ const routes = [
           breadcrumb: [
             { label: '订单管理', path: '/orderList' },
             { label: '订单列表' }
-          ]
+          ],
+          keepAlive: true
         }
       },
       {
@@ -174,7 +180,8 @@ const routes = [
           breadcrumb: [
             { label: '权限管理', path: '/permissionInfo' },
             { label: '权限信息' }
-          ]
+          ],
+          keepAlive: true // 补上 keepAlive
         }
       },{
         path: '/goodsEdit',
@@ -190,12 +197,14 @@ const routes = [
           breadcrumb: [
             { label: '权限管理', path: '/RolePermission' },
             { label: '角色管理' }
-          ]
+          ],
+          keepAlive: true // 补上 keepAlive
         }
       },
     ],
   },
 ];
+
 
 const router = createRouter({
   history: createWebHashHistory(),
