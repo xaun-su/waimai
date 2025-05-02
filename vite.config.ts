@@ -24,5 +24,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)), // 使用 fileURLToPath 和 URL
     },
   },
+  server: {
+    proxy: {
+      '/api': { // 代理的路径 
+        target:"http://8.137.157.16:9002", // 目标地址
+        changeOrigin: true, // 允许跨域
+        rewrite: (path) => path.replace(/^\/api/, ''), // 重写路径
+      },
+    }
+  },
   base: '/', // 添加 base 选项
 });

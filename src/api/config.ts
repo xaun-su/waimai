@@ -1,4 +1,4 @@
-export const baseURL = 'http://8.137.157.16:9002';
+export const baseURL = 'api';
 
 // 商品
 // 商品列表的url
