@@ -17,6 +17,8 @@ import PermissionInfoView from '../views/permission/PermissionInfoView.vue';
 import RolePermissionView from '../views/permission/RolePermissionView.vue';
 import AddGood from '../components/addGood.vue';
 import LoginHomeView from '../views/home/LoginHomeView.vue';
+import { pa } from 'element-plus/es/locale/index.mjs';
+import { useUserStore } from '@/stores/use';
 
 const routes = [
   {
@@ -27,7 +29,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView,
-  },
+  },{
+    path:'/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/error/Error.vue')
+  } ,
   {
     path: '/home',
     name: 'home',
@@ -200,7 +206,7 @@ const routes = [
           ],
           keepAlive: true // 补上 keepAlive
         }
-      },
+      }
     ],
   },
 ];
@@ -210,5 +216,28 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
+
+
+// 配置路由守卫
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore();
+
+  // 排除不需要登录的页面
+  const noLoginRequired = ['/login', '/register', '/404', '/resetPwd'];
+  if (noLoginRequired.includes(to.path)) {
+    return next();  // 直接放行
+  }
+
+  // 检查用户是否已经登录
+  if (userStore.id) {
+    return next();  // 用户已登录，允许访问
+  }
+
+  // 如果未登录，重定向到登录页面
+  return next('/login');
+});
+
+
+
 
 export default router;
