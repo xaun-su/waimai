@@ -15,3 +15,4 @@
   to = "http://8.137.157.16:9002/upload/imgs/goods_img/:splat"
   status = 200
   force = true
+

@@ -22,6 +22,7 @@ import { ElMessage } from 'element-plus';
 import request from '@/utils/request'; // 引入你的 axios 封装
 import { useUserStore } from '@/stores/use';
 import {account_info} from '@/api/account'
+import { baseURL } from '@/api/config';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -39,7 +40,7 @@ const getAccountCenter = async () => {
     if (response.data.code === 0) {
       console.log(response.data.accountInfo);
       username.value = response.data.accountInfo.account;
-      avatarUrl.value = 'http://8.137.157.16:9002'+ response.data.accountInfo.imgUrl;
+      avatarUrl.value = baseURL+ response.data.accountInfo.imgUrl;
     } else {
       ElMessage.error(response.data.msg || '获取账户信息失败');
     }

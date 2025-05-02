@@ -45,7 +45,8 @@
           :show-file-list="false"
         >
           <el-icon v-if="!form.imgUrl"><Plus /></el-icon>
-          <img v-else :src="'http://8.137.157.16:9002' + form.imgUrl" class="avatar" />
+          <!-- //netlify代理前 -->
+          <img v-else :src="baseURL + form.imgUrl" class="avatar" />
         </el-upload>
       </el-form-item>
 
