@@ -3,15 +3,3 @@
   to = "http://8.137.157.16:9002/:splat"
   status = 200
   force = true
-
-[[redirects]]
-  from = "/upload/imgs/acc_img/*"
-  to = "http://8.137.157.16:9002/upload/imgs/acc_img/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/upload/imgs/goods_img/*"
-  to = "http://8.137.157.16:9002/upload/imgs/goods_img/:splat"
-  status = 200
-  force = true
