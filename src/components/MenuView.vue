@@ -10,7 +10,7 @@
     :unique-opened="true"
   >
     <el-menu-item index="0" disabled>
-      <img src="../assets/vue.svg" alt="" />
+      <img src="../assets/vue.svg" alt="" style="width: 25px;height: 25px;"/>
       <span>智慧点餐后台管理系统</span>
     </el-menu-item>
     <el-menu-item index="1" @click="handleMenuItemClick('1')">
